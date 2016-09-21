@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function main() {
     };
 
     var playbillRecord = {
-        "ephemeralRecord": ephemeralRecord.ephemeralRecord,
+        "ephemeralRecords": [ephemeralRecord.ephemeralRecord],
     };  // One megaform to rule them all!!!
 
 
@@ -238,16 +238,26 @@ document.addEventListener('DOMContentLoaded', function main() {
         return val + ' ';
     }
 
-    function camelToTitle(s) {
-        return s.replace(/([a-z](?=[A-Z]))/g, insertSpace)
-                .replace(/(^[a-z])/g, s[0].toUpperCase())
-                .replace(/(-)/g, ' ');
+    function upperCase(match, val) {
+        return val.toUpperCase();
     }
 
-    function camelToId(s, prefix) {
-        prefix = prefix ? prefix + '-' : '';
-        s = s.replace(/([a-z](?=[A-Z]))/g, insertSpace).toLowerCase();
-        return prefix + s.replace(/(\s)/g, '-');
+    function splitCamel(s) {
+        return s.replace(/([a-z](?=[A-Z]))/g, insertSpace)  // Split CamelCase
+                .replace(/([a-z](?=[0-9]))/g, insertSpace)  // Separate Digits
+                .replace(/([0-9](?=[a-zA-Z]))/g, insertSpace);   // (ditto)
+    }
+
+    function titleCase(s) {
+        s = splitCamel(s);
+        return s.replace(/(^[a-z])/g, s[0].toUpperCase())   // First Cap
+                .replace(/( [a-z])/g, upperCase);           // Cap After Space
+    }
+
+    function toId(s, prefix) {
+        s = splitCamel(s);
+        prefix = prefix ? s ? prefix + '_' : prefix : '';
+        return prefix + s.replace(/(\s)/g, '-').toLowerCase();
     }
 
     function singular(s) {
@@ -268,59 +278,67 @@ document.addEventListener('DOMContentLoaded', function main() {
         return tag;
     }
 
-    function renderInput(root, key, attribs, prefix) {
-        var label = document.createElement('label');
-        var labelText = document.createTextNode(camelToTitle(key));
-        label.appendChild(labelText);
-        label.setAttribute('for', camelToId(key, prefix));
-        label = wrapWith('div', label);
+    function renderInput(root, label, id, attribs) {
+        var labelEl = document.createElement('label');
+        var labelText = document.createTextNode(label);
+        labelEl.appendChild(labelText);
+        labelEl.setAttribute('for', id);
+        labelEl = wrapWith('div', labelEl);
 
         var inputEl = document.createElement('input');
-        inputEl.setAttribute('id', camelToId(key, prefix));
+        inputEl.setAttribute('id', id);
         inputEl.setAttribute('size', '40');
-        inputEl.addEventListener('mouseover', function() {
+
+        var renderHelpText = function() {
             var help = document.getElementById('help-window-text');
             var helpHeader = document.createElement('h5');
-            var title = document.createTextNode(camelToTitle(key));
+            var title = document.createTextNode(label);
             var text = document.createTextNode(attribs.documentation);
 
             help.innerHTML = "";
             helpHeader.appendChild(title);
             help.appendChild(helpHeader);
             help.appendChild(text);
-        });
+        };
+        inputEl.addEventListener('mouseover', renderHelpText);
+        inputEl.addEventListener('focus', renderHelpText);
         inputEl = wrapWith('div', inputEl);
 
         var container = document.createElement('p');
-        container.appendChild(label);
+        container.appendChild(labelEl);
         container.appendChild(inputEl);
         root.appendChild(container);
+        return container;
     }
 
-    function renderHeader(root, key, attribs) {
+    function renderHeader(root, text, attribs) {
         var header = document.createElement('h3');
-        var headerText = document.createTextNode(camelToTitle(key));
+        var headerText = document.createTextNode(text);
 
         for (var attribKey in attribs) {
             header.setAttribute(attribKey, attribs[attribKey]);
         }
         header.appendChild(headerText);
         root.appendChild(header);
+        return header;
     }
 
-    function generateSubRoot(root, key, prefix) {
+    function renderSubRoot(root, attribs) {
         var subRoot = document.createElement('div');
+
+        for (var attribKey in attribs) {
+            subRoot.setAttribute(attribKey, attribs[attribKey]);
+        }
         root.appendChild(subRoot);
         return subRoot;
     }
 
-    function buildRenderSubForm(root, key, subForm, prefix) {
+    function buildRenderSubForm(root, key, subForm, idPrefix) {
         renderSubForm = function(n) {
             renderFunc = function() {
-                newSubForm = {};
-                newSubForm[enumerate(key, n, '-')] = subForm[0];
-                render(generateSubRoot(root, key), 
-                        newSubForm, prefix);
+                var newHeader = singular(titleCase(key)) + ' ' + n;
+                render(renderSubRoot(root), subForm, 
+                       toId(key, idPrefix) + '_' + n, newHeader);
                 n += 1;
                 event.preventDefault();
                 return false;
@@ -331,11 +349,11 @@ document.addEventListener('DOMContentLoaded', function main() {
         return renderSubForm(1);
     }
 
-    function renderNewItemButton(root, key, subForm, prefix) {
-        var renderSubForm = buildRenderSubForm(root, key, subForm, prefix);
+    function renderNewItemButton(root, key, subForm, idPrefix) {
+        var renderSubForm = buildRenderSubForm(root, key, subForm, idPrefix);
         var button = document.createElement('a');
         var text = document.createTextNode(
-                '+ New ' + singular(camelToTitle(key))
+                '+ New ' + singular(titleCase(key))
         );
 
         button.setAttribute('href', '#');
@@ -345,51 +363,118 @@ document.addEventListener('DOMContentLoaded', function main() {
         return button;
     }
 
-    function render(root, formSpec, prefix) {
-        var formKeys = Object.keys(formSpec);
-        formKeys.sort(function cmp(a, b) {
-            if (formSpec[a].hasOwnProperty('documentation')) {
-                if (!formSpec[b].hasOwnProperty('documentation')) {
-                    return -1;
+    function render(root, formSpec, idPrefix, header) {
+        var formKeys;
+        var renderButton;
+        idPrefix = idPrefix ? idPrefix : '';
+
+        if (Array.isArray(formSpec)) {
+            formKeys = [0];  // Lists must always be length 1, and the
+                             // "key" should be empty.
+        } else {
+            formKeys = Object.keys(formSpec);
+            formKeys.sort(function cmp(a, b) {
+                if (formSpec[a].hasOwnProperty('documentation')) {
+                    if (!formSpec[b].hasOwnProperty('documentation')) {
+                        return -1;
+                    }
+                } else {
+                    if (formSpec[b].hasOwnProperty('documentation')) {
+                        return 1;
+                    }
                 }
-            } else {
-                if (formSpec[b].hasOwnProperty('documentation')) {
-                    return 1;
-                }
-            }
-            
-            return a < b ? -1 : a == b ? 0 : 1;
-        });
+                
+                return a < b ? -1 : a == b ? 0 : 1;
+            });
+        }
 
         for (var i = 0; i < formKeys.length; i++) {
             var key = formKeys[i];
-
             if (!formSpec.hasOwnProperty(key)) {
                 continue;
             }
+
             var subForm = formSpec[key];
+            if (Array.isArray(formSpec)) {  // The new item renderer will
+                key = '';                   // handle keys for sequences.
+            }
+
+            var subHeader = header ? header : titleCase(key);
             var subRoot;
 
             if (subForm.hasOwnProperty('documentation')) {
-                renderInput(root, key, subForm, prefix);
+                renderInput(root, subHeader, toId(key, idPrefix), subForm);
             } else if (Array.isArray(subForm)) {
-                renderHeader(root, key, {'class': 'subheader'});
-                subRoot = generateSubRoot(root, key);
-                subRoot.classList.add('subform-group');
+                renderHeader(root, subHeader, {'class': 'subheader'});
+                subRoot = renderSubRoot(root, {'class': 'subform-group'});
                 var button = renderNewItemButton(
-                        subRoot, key, subForm, prefix);
-                root.appendChild(wrapWith('div', button, 
-                            {'class': 'subform-group ui-element'}));
-
+                        subRoot, key, subForm, idPrefix);
+                button = wrapWith('div', button, 
+                        {'class': 'subform-group ui-element'});
+                root.appendChild(button);
             } else {
-                renderHeader(root, key);
-                render(generateSubRoot(root, key), subForm, prefix);
+                renderHeader(root, subHeader, {'class': 'instance-header'});
+                render(renderSubRoot(root), subForm, toId(key, idPrefix));
             }
         }
     }
 
+    function assignKey(obj, keys, val, depth) {
+        if (typeof keys === 'string') {
+            keys = keys.split('_');
+            for (i = 0; i < keys.length; i++) {
+                var key = keys[i].split('-');
+                for (j = 0; j < key.length; j++) {
+                    key[j] = key[j][0].toUpperCase() + key[j].slice(1);
+                }
+                key = key.join('');
+                keys[i] = key[0].toLowerCase() + key.slice(1);
+            }
+        }
+
+        if (keys.length < 1) {
+            return;
+        }
+
+        var first = keys[0];
+        first = isNaN(parseInt(first)) ? first : parseInt(first) - 1;
+
+        if (keys.length === 1) {
+            obj[first] = val;
+            return;
+        }
+       
+        if (!obj.hasOwnProperty(first)) {
+            if (isNaN(parseInt(keys[1]))) {
+                obj[first] = {};
+            } else {
+                obj[first] = [];
+            }
+        }
+        assignKey(obj[first], keys.slice(1), val, depth + 1);
+    }
+
     var formRoot = document.getElementById('playbill-form');
     render(formRoot, playbillRecord);
+
+    var submitButton = document.getElementById('playbill-submit');
+    submitButton.addEventListener('click', function() {
+        var elements = document.getElementsByTagName('input');
+        var out = {};
+        for (var i = 0; i < elements.length; i++) {
+            assignKey(out, elements[i].id, elements[i].value, 0);
+        }
+        
+        var outDiv = document.getElementById('json-out');
+        var outPre = document.createElement('pre');
+        var outJson = document.createTextNode(JSON.stringify(out, null, 2));
+        outDiv.innerHTML = '';
+        outDiv.appendChild(outPre);
+        outPre.appendChild(outJson);
+
+        event.preventDefault();
+        return false; 
+    });
 
 });
 
