@@ -264,9 +264,8 @@ document.addEventListener('DOMContentLoaded', function main() {
         return s.replace(/(s$)/g, '');
     }
 
-    function enumerate(s, n, spacer) {
-        spacer = (spacer || spacer === '') ? spacer : ' ';
-        return singular(s) + spacer + n;
+    function stripNum(s) {
+        return s.replace(/([0-9]+\s*$)/g, '');
     }
 
     function wrapWith(tagname, el, attribs) {
@@ -292,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function main() {
         var renderHelpText = function() {
             var help = document.getElementById('help-window-text');
             var helpHeader = document.createElement('h5');
-            var title = document.createTextNode(label);
+            var title = document.createTextNode(stripNum(label));
             var text = document.createTextNode(attribs.documentation);
 
             help.innerHTML = "";
