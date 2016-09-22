@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function main() {
     };
 
     var playbillRecord = {
-        "ephemeralRecords": [ephemeralRecord.ephemeralRecord],
+        "ephemeralRecord": ephemeralRecord.ephemeralRecord,
     };  // One megaform to rule them all!!!
 
 
@@ -474,7 +474,8 @@ document.addEventListener('DOMContentLoaded', function main() {
         var dl = document.createElement('a');
         dl.setAttribute('href', 'data:text/plain;charset=utf-8,' +
                 encodeURIComponent(JSON.stringify(out, null, 2)));
-        dl.setAttribute('download', 'playbill-record.json');
+        dl.setAttribute('download', 
+                out.ephemeralRecord.archiveHoldingDocument + '.json');
         dl.style.display = 'none';
         document.body.appendChild(dl);
         dl.click();
