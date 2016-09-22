@@ -464,13 +464,22 @@ document.addEventListener('DOMContentLoaded', function main() {
             assignKey(out, elements[i].id, elements[i].value, 0);
         }
         
-        var outDiv = document.getElementById('json-out');
-        var outPre = document.createElement('pre');
-        var outJson = document.createTextNode(JSON.stringify(out, null, 2));
-        outDiv.innerHTML = '';
-        outDiv.appendChild(outPre);
-        outPre.appendChild(outJson);
-
+        //var outDiv = document.getElementById('json-out');
+        //var outPre = document.createElement('pre');
+        //var outJson = document.createTextNode(JSON.stringify(out, null, 2));
+        //outDiv.innerHTML = '';
+        //outDiv.appendChild(outPre);
+        //outPre.appendChild(outJson);
+        
+        var dl = document.createElement('a');
+        dl.setAttribute('href', 'data:text/plain;charset=utf-8,' +
+                encodeURIComponent(JSON.stringify(out, null, 2)));
+        dl.setAttribute('download', 'playbill-record.json');
+        dl.style.display = 'none';
+        document.body.appendChild(dl);
+        dl.click();
+        document.body.removeChild(dl);
+        
         event.preventDefault();
         return false; 
     });
