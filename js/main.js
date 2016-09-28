@@ -16,7 +16,9 @@ document.addEventListener('DOMContentLoaded', function main() {
     var currencyRex = "";  // Yowza...
     
     // [LIBRARY, COLLECTION_NAME, CALL_NUMBER]
-    var archiveRex = [freeTextRex, freeTextRex, freeTextRex]; 
+    var libraryRex = freeTextRex;
+    var collectionRex = freeTextRex;
+    var callNumberRex = freeTextRex;
 
     var periodicalTitleRex = "";  // Create a rex-based controlled vocab
 
@@ -193,10 +195,19 @@ document.addEventListener('DOMContentLoaded', function main() {
                                  "found",
             },
             "archiveHoldingDocument": {
-                "validator": archiveRex,
-                "documentation": "A comma-separated 3-tuple containing the " +
-                                 "name of the library or archive, the name " +
-                                 "of the holding collection, and a call number"
+                "validator": libraryRex,
+                "documentation": "The name of the library or archive that " +
+                                 "holds the document."
+            },
+            "containingCollection": {
+                "validator": collectionRex,
+                "documentation": "The name of the collection the document " +
+                                 "resides in."
+            },
+            "callNumber": {
+                "validator": callNumberRex,
+                "documentation": "The call number of the document as " +
+                                 "specified by the holding institution."
             },
             "periodicalTitle": {
                 "validator": periodicalTitleRex,
