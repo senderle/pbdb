@@ -568,5 +568,3 @@ document.addEventListener('DOMContentLoaded', function main() {
 // Add contributor_type (parent, name)
 // Add document_type (parent, name)
 // Add performance_type (parent, name)
-
-/*
