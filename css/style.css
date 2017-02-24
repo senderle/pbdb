@@ -6,11 +6,11 @@
     position: fixed;
     left: 60%;
     top: 0;
-    max-width: 25%;
+    max-width: 20%;
 }
 
 #playbill-form {
-    max-width: 55%;
+    max-width: 65%;
 }
 
 a {
