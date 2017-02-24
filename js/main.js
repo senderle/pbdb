@@ -542,14 +542,15 @@ document.addEventListener('DOMContentLoaded', function main() {
         //outDiv.appendChild(outPre);
         //outPre.appendChild(outJson);
        
-        var filename = out.ephemeralRecord.shows[0].venue + 
-                       out.ephemeralRecord.shows[0].date +
+        var filename = out.ephemeralRecord.shows[0].venue + ' ' +
+                       out.ephemeralRecord.shows[0].date + ' ' +
                        out.ephemeralRecord.shows[0].performances[0].title;
+        filename = toId(filename) + '.json';
          
         var dl = document.createElement('a');
         dl.setAttribute('href', 'data:text/plain;charset=utf-8,' +
                 encodeURIComponent(JSON.stringify(out, null, 2)));
-        dl.setAttribute('download', filename + '.json');
+        dl.setAttribute('download', filename);
         dl.style.display = 'none';
         document.body.appendChild(dl);
         dl.click();
