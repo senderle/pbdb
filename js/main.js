@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', function main() {
                       "Charitable Benefit Performance|Occasional Performance";
     var performanceKindRex = "Main Piece|Interlude|After Piece|Interpolation";
 
+    var boolRex = ""; // Make this correct
+
     var floatingPointRex = "";  // Make this correct
     var intRex = "";  // Make this correct 
     var dateRex = "";  // Make this correct
@@ -23,8 +25,8 @@ document.addEventListener('DOMContentLoaded', function main() {
     var periodicalTitleRex = "";  // Create a rex-based controlled vocab
 
     // [NAME_OF_PRINTER, PLACE]
-    var printerOfDocumentRex = [freeTextRex, freeTextRex];
     var venueRex = freeTextRex;  // Create a rex-based controlled vocab?
+    var locationRex = freeTextRex; // Create a rex-based controlled vocab?
 
     var personRex = URLRex;  // Use a URI for open linked data?
     
@@ -77,6 +79,60 @@ document.addEventListener('DOMContentLoaded', function main() {
         }
     };
 
+    var contributor = {
+        "contributor": {
+            "contributorName": {
+                "validator": personRex,
+                "documentation": "The name of the contributor."
+            },
+            "contributorType": {
+                "validator": personRex,
+                "documentation": "The type of contributor (e.g. Scene " +
+                                 "Painter, Director, etc.)"
+            }
+        }
+    };
+
+    var newPerformerNotes = {
+        "newPerformerNotes": {
+            "newRole": {
+                "validator": boolRex,
+                "formType": "checkbox",
+                "documentation": "An indicator set to true if the document " +
+                                 "identifies this as the performer's first " +
+                                 "appearance in this role."
+            },
+            "newPerformer": {
+                "validator": boolRex,
+                "formType": "checkbox",
+                "documentation": "An indicator set to true if the document " +
+                                 "identifies this as the performer's first " +
+                                 "appearance at this venue."
+            },
+            "newPerformerOrigin": {
+                "validator": venueRex,
+                "documentation": "The performer's previous venue, if given " +
+                                 "by the document, and if the document " +
+                                 "identifies this as the performer's first " +
+                                 "appearance at this venue."
+            }
+        }
+    };
+
+    var performer = {
+        "performer": {
+            "performerName": {
+                "validator": personRex,
+                "documentation": "The name of the performer."
+            },
+            "role": {
+                "validator": freeTextRex,
+                "documentation": "The name of the performer's role."
+            },
+            "newPerformerNotes": newPerformerNotes.newPerformerNotes
+        }
+    };
+
     var performance = {
         "performance": {
             "orderOfPerformance": {
@@ -90,25 +146,17 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "documentation": "The title of the work being performed, " +
                                  "exactly as given by the playbill."
             },
-            "contributors": [{
-                "validator": contributorRex,
-                "documentation": "A comma-separated 2-tuple containing the " +
-                                 "person and the type of their contribution."
-            }],
+            "contributors": [contributor.contributor],
             "kindOfPerformance": {
                 "validator": performanceKindRex,
                 "documentation": "Kind of performance. One of Main Piece / " +
                                  "Interlude / After Piece / Interpolation."
             },
-            "performers": [{
-                "validator": performerRex,
-                "documentation": "A comma-separated 2-tuple containing the " +
-                                 "person and the name of their role."
-            }],
+            "performers": [performer.performer],
             "genreClaim": {
                 "validator": freeTextRex,
                 "documentation": "The genre claim, exactly as given by the " +
-                                 "playbill."
+                                 "document."
             }
         }
     };
@@ -119,15 +167,16 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "validator": freeTextRex,
                 "documentation": "The geographical location of the " +
                                  "performance, exactly as given by the " +
-                                 "playbill."
+                                 "document."
             },
             "venue": {
                 "validator": venueRex,
                 "documentation": "The venue of the performance, exactly " +
-                                 "as given by the playbill."
+                                 "as given by the document."
             },
             "date": {
                 "validator": dateRex,
+                "formType": "date",
                 "documentation": "The exact date of the performance in " +
                                  "YYYYMMDD format. For ranges of dates, " +
                                  "create a separate Show Record for each date."
@@ -135,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function main() {
             "theaterCompany": {
                 "validator": freeTextRex,
                 "documentation": "The name of the theater company, exactly " +
-                                 "as given by the playbill."
+                                 "as given by the document."
             },
             "occasion": {
                 "validator": occasionRex,
@@ -164,18 +213,31 @@ document.addEventListener('DOMContentLoaded', function main() {
             "featuredAttractions": [{
                 "validator": freeTextRex,
                 "documentation": "Any featured attractions described in the " +
-                                 "playbill, exactly as given."
+                                 "document, exactly as given."
             }],
             "notes": [{
                 "validator": freeTextRex,
                 "documentation": "Notes describing compelling or otherwise " +
-                                 "important details from the playbill that " +
+                                 "important details from the document that " +
                                  "will not be captured by any other field."
             }],
             "performances": [performance.performance],
             //"upcomingPerformances": [showRecord.showRecord],  // it's a 
                                                               // recursive 
                                                               // type!!
+        }
+    };
+
+    var documentPrinter = {
+        "documentPrinter": {
+            "name": {
+                "validator": personRex,
+                "documentation": "The name of the printer."
+            },
+            "location": {
+                "validator": locationRex,
+                "documentation": "The city where the document was printed."
+            }
         }
     };
 
@@ -215,13 +277,7 @@ document.addEventListener('DOMContentLoaded', function main() {
                                  "(e.g. for advertisements). We may develop " +
                                  "a controlled vocabulary for this."
             },
-            "documentPrinter": {
-                "validator": printerOfDocumentRex,
-                "documentation": "A comma-separated 2-tuple containing the " +
-                                 "name of the printer, and the location of " +
-                                 "the printer, e.g. London. We may deelop a " +
-                                 "controlled vocabulary for one or both terms."
-            },
+            "documentPrinter": documentPrinter.documentPrinter,
             "shows": [showRecord.showRecord],
             "dimensions": {
                 "validator": [floatingPointRex, floatingPointRex],
@@ -298,6 +354,7 @@ document.addEventListener('DOMContentLoaded', function main() {
         var inputEl = document.createElement('input');
         inputEl.setAttribute('id', id);
         inputEl.setAttribute('size', '40');
+        inputEl.setAttribute('type', attribs.formType || 'text');
 
         var renderHelpText = function() {
             var help = document.getElementById('help-window-text');
@@ -429,7 +486,7 @@ document.addEventListener('DOMContentLoaded', function main() {
         }
     }
 
-    function assignKey(obj, keys, val, depth) {
+    function assignKey(obj, keys, val) {
         if (typeof keys === 'string') {
             keys = keys.split('_');
             for (i = 0; i < keys.length; i++) {
@@ -461,18 +518,21 @@ document.addEventListener('DOMContentLoaded', function main() {
                 obj[first] = [];
             }
         }
-        assignKey(obj[first], keys.slice(1), val, depth + 1);
+        assignKey(obj[first], keys.slice(1), val);
     }
 
     var formRoot = document.getElementById('playbill-form');
     render(formRoot, playbillRecord);
+    //console.log(JSON.stringify(playbillRecord));
 
     var submitButton = document.getElementById('playbill-submit');
     submitButton.addEventListener('click', function() {
         var elements = document.getElementsByTagName('input');
         var out = {};
         for (var i = 0; i < elements.length; i++) {
-            assignKey(out, elements[i].id, elements[i].value, 0);
+            var value = elements[i].type === 'checkbox' ? elements[i].checked : 
+                                                          elements[i].value;
+            assignKey(out, elements[i].id, value);
         }
         
         //var outDiv = document.getElementById('json-out');
