@@ -3,10 +3,32 @@
 } */
 
 #help-window {
+}
+
+#load-file-window {
+    position: absolute;
+    bottom: 16%
+}
+
+#save-file-window {
+    position: absolute;
+    bottom: 4%;
+}
+
+div.side-window {
+    max-width: 85%;
+}
+
+div#side-window-container {
+    left: 70%;
     position: fixed;
-    left: 60%;
-    top: 0;
-    max-width: 20%;
+    border-style: dashed;
+    border-width: 1px;
+    min-height: 90%;
+    max-width: 25%;
+    min-width: 25%;
+    padding: 10px;
+    margin: 10px;
 }
 
 #playbill-form {
@@ -18,14 +40,13 @@ a {
 }
 
 div {
-    margin: 2px 4px 2px 16px;
+    margin: 2px 4px 2px 12px;
 }
 
 div.subform-group {
-    /* border-style: dashed;
-    border-width: 1px; */
     padding: 6px;
     background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
 }
 
 div.subform-group div.subform-group {
@@ -38,7 +59,10 @@ h3.subheader {
 } */
 
 div.ui-element {
-    padding: 8px 32px 8px 20px;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 4px 4px 4px 18px;
+    border-radius: 4px;
+    min-width: 30px;
 }
 
 input {

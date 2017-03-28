@@ -139,7 +139,9 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "validator": intRex,
                 "documentation": "An integer describing the position of " +
                                  "this performance within the larger show. " +
-                                 "Starts at 1."
+                                 "Starts at 1. Interpolations should be " +
+                                 "numbered in order, and are assumed to " +
+                                 "occur within the last full piece listed."
             },
             "title": {
                 "validator": freeTextRex,
@@ -327,6 +329,30 @@ document.addEventListener('DOMContentLoaded', function main() {
         return prefix + s.replace(/(\s)/g, '-').toLowerCase();
     }
 
+    function idToList(keys) {
+        // Take id keys in the form "yabba-dabba_doo" and convert them to 
+        // a list of keys in the form `['yabbaDabba', 'doo']`.
+        if (typeof keys === 'string') {
+            keys = keys.split('_');
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i].split('-');
+                for (j = 0; j < key.length; j++) {
+                    key[j] = key[j][0].toUpperCase() + key[j].slice(1);
+                }
+                key = key.join('');
+                keys[i] = key[0].toLowerCase() + key.slice(1);
+            }
+        }
+        return keys;
+    }
+
+    function listToId(keyList) {
+        // Take a list of keys in the form `['yabbaDabba', 'doo']` and
+        // convert them to id keys in the form "yabba-dabba_doo".
+        var ids = keyList.map(function (i) { return toId('' + i); });
+        return ids.join('_');
+    }
+
     function singular(s) {
         return s.replace(/(s$)/g, '');
     }
@@ -354,6 +380,7 @@ document.addEventListener('DOMContentLoaded', function main() {
         var inputEl = document.createElement('input');
         inputEl.setAttribute('id', id);
         inputEl.setAttribute('size', '40');
+        inputEl.setAttribute('class', 'main-form-input');
         inputEl.setAttribute('type', attribs.formType || 'text');
 
         var renderHelpText = function() {
@@ -379,8 +406,8 @@ document.addEventListener('DOMContentLoaded', function main() {
     }
 
     function renderHeader(root, text, attribs) {
-        var header = document.createElement('h3');
         var headerText = document.createTextNode(text);
+        var header = document.createElement('h3');
 
         for (var attribKey in attribs) {
             header.setAttribute(attribKey, attribs[attribKey]);
@@ -390,8 +417,9 @@ document.addEventListener('DOMContentLoaded', function main() {
         return header;
     }
 
-    function renderSubRoot(root, attribs) {
+    function renderSubRoot(root, id, attribs) {
         var subRoot = document.createElement('div');
+        subRoot.setAttribute('id', id);
 
         for (var attribKey in attribs) {
             subRoot.setAttribute(attribKey, attribs[attribKey]);
@@ -400,24 +428,45 @@ document.addEventListener('DOMContentLoaded', function main() {
         return subRoot;
     }
 
-    function buildRenderSubForm(root, key, subForm, idPrefix) {
-        renderSubForm = function(n) {
-            renderFunc = function() {
-                var newHeader = singular(titleCase(key)) + ' ' + n;
-                render(renderSubRoot(root), subForm, 
-                       toId(key, idPrefix) + '_' + n, newHeader);
-                n += 1;
-                event.preventDefault();
-                return false;
+    subFormFactory = (function() {
+        // A factory object that creates and keeps track of the callbacks
+        // that render new copies of forms that can be repeated. For
+        // example, if a scheme allows multiple `tree`s in a list, this
+        // renders a new `tree` sub-form each time it is called, with
+        // a key that reflects its order of creation. (tree_1, tree_2, etc.)
+
+        var factory = {};
+        factory.getRendererFromKey = {};
+        factory.buildRenderer = function(root, key, subForm, idPrefix) {
+            
+            var renderSubForm = function(n) {
+                // This closure maintains the renderFunc's state (`n`).
+                var renderFunc = function() {
+                    // This function renders the actual form, tracking
+                    // and updating the value of `n` attached to its closure.
+                    var newHeader = singular(titleCase(key)) + ' ' + n;
+                    render(renderSubRoot(root), subForm, 
+                           toId(key, idPrefix) + '_' + n, newHeader);
+                    n += 1;
+                    event.preventDefault();
+                    return false;
+                };
+                
+                factory.getRendererFromKey[toId(key, idPrefix)] = renderFunc; 
+                return renderFunc;
             };
-           
-            return renderFunc;
+
+            return renderSubForm(1);
         };
-        return renderSubForm(1);
-    }
+
+        return factory;
+    })();
 
     function renderNewItemButton(root, key, subForm, idPrefix) {
-        var renderSubForm = buildRenderSubForm(root, key, subForm, idPrefix);
+        var renderSubForm = subFormFactory.buildRenderer(
+            root, key, subForm, idPrefix
+        );
+
         var button = document.createElement('a');
         var text = document.createTextNode(
                 '+ New ' + singular(titleCase(key))
@@ -469,35 +518,69 @@ document.addEventListener('DOMContentLoaded', function main() {
             var subHeader = header ? header : titleCase(key);
             var subRoot;
 
+            var nodeId = toId(key, idPrefix);
             if (subForm.hasOwnProperty('documentation')) {
-                renderInput(root, subHeader, toId(key, idPrefix), subForm);
+                renderInput(root, subHeader, nodeId, subForm);
             } else if (Array.isArray(subForm)) {
                 renderHeader(root, subHeader, {'class': 'subheader'});
-                subRoot = renderSubRoot(root, {'class': 'subform-group'});
+                subRoot = renderSubRoot(root, 
+                                        nodeId,
+                                        {'class': 'subform-group'});
                 var button = renderNewItemButton(
                         subRoot, key, subForm, idPrefix);
                 button = wrapWith('div', button, 
-                        {'class': 'subform-group ui-element'});
+                        {'class': 'subform-group'});
                 root.appendChild(button);
             } else {
                 renderHeader(root, subHeader, {'class': 'instance-header'});
-                render(renderSubRoot(root), subForm, toId(key, idPrefix));
+                render(renderSubRoot(root, nodeId),
+                       subForm, 
+                       nodeId);
             }
         }
     }
 
+    function resetForm() {
+        var formRoot = document.getElementById('playbill-form');
+        while (formRoot.lastChild) {
+                formRoot.removeChild(formRoot.lastChild);
+        }
+        render(formRoot, playbillRecord);
+    }
+
     function assignKey(obj, keys, val) {
-        if (typeof keys === 'string') {
-            keys = keys.split('_');
-            for (i = 0; i < keys.length; i++) {
-                var key = keys[i].split('-');
-                for (j = 0; j < key.length; j++) {
-                    key[j] = key[j][0].toUpperCase() + key[j].slice(1);
-                }
-                key = key.join('');
-                keys[i] = key[0].toLowerCase() + key.slice(1);
+        keys = idToList(keys);
+
+        if (keys.length < 1) {
+            return;
+        }
+
+        // Convert the first key to an integer if it's an integer.
+        var first = keys[0];
+        first = isNaN(parseInt(first)) ? first : parseInt(first) - 1;
+
+        // If it's the only value, this is a terminal key. End recursion.
+        if (keys.length === 1) {
+            obj[first] = val;
+            return;
+        }
+      
+        // If there are more values, we need to make sure they have an
+        // object or array to live in, and to create one if not. 
+        if (!obj.hasOwnProperty(first)) {
+            if (isNaN(parseInt(keys[1]))) {
+                obj[first] = {};
+            } else {
+                obj[first] = [];
             }
         }
+
+        // Now we can recurse...
+        assignKey(obj[first], keys.slice(1), val);
+    }
+
+    function getKey(obj, keys) {
+        keys = idToList(keys);
 
         if (keys.length < 1) {
             return;
@@ -507,27 +590,75 @@ document.addEventListener('DOMContentLoaded', function main() {
         first = isNaN(parseInt(first)) ? first : parseInt(first) - 1;
 
         if (keys.length === 1) {
-            obj[first] = val;
-            return;
+            return obj ? obj[first] : null;
+        } else {
+            return obj ? getKey(obj[first], keys.slice(1)) : null;
         }
-       
-        if (!obj.hasOwnProperty(first)) {
-            if (isNaN(parseInt(keys[1]))) {
-                obj[first] = {};
-            } else {
-                obj[first] = [];
-            }
-        }
-        assignKey(obj[first], keys.slice(1), val);
     }
 
-    var formRoot = document.getElementById('playbill-form');
-    render(formRoot, playbillRecord);
-    //console.log(JSON.stringify(playbillRecord));
+    function isPrimitive(val) {
+        var vtype = typeof val;
+        return (vtype === 'string') ||
+               (vtype === 'number') ||
+               (vtype === 'boolean') ||
+               (val === null) ||
+               (val === undefined);
+    }
+
+    function walkObj(obj, callback, condition, keyPath) {
+        var useCondition = (typeof condition === 'function') ? true : false;
+        var keys, i;
+
+        keyPath = keyPath || [];
+        var newKeyPath = keyPath.slice();
+        newKeyPath.push(null);
+
+        if (Array.isArray(obj)) {
+            keys = [];
+            for (i = 0; i < obj.length; i++) {
+                keys.push(i);
+            }
+        } else {
+            keys = Object.keys(obj);
+        }
+
+        for (i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            var val = obj[key];
+            newKeyPath[newKeyPath.length - 1] = key;
+
+            if (!isPrimitive(val)) {
+                callback(val, newKeyPath);
+                walkObj(val, callback, condition, newKeyPath);
+            } else if (!useCondition || condition(val, newKeyPath)) {
+                callback(val, newKeyPath);
+            }
+        }
+    }
+
+    function jsonToFilename(json) {
+        var venue = json.ephemeralRecord.shows[0].venue;
+        var date = json.ephemeralRecord.shows[0].date;
+        var title = json.ephemeralRecord.shows[0].performances[0].title;
+        var elements = [venue, date, title];
+        var tojoin = [];
+
+        for (var i = 0; i < elements.length; i++) {
+            if (elements[i] !== '') {
+                tojoin.push(elements[i]);
+            }
+        }
+
+        var filename = toId(tojoin.join(' '));
+        filename = filename === '' ? 'empty-record.json' : filename + '.json';
+        return filename;
+    }
+
+    // Add event listeners to static UI elements.
 
     var submitButton = document.getElementById('playbill-submit');
     submitButton.addEventListener('click', function() {
-        var elements = document.getElementsByTagName('input');
+        var elements = document.querySelectorAll('input.main-form-input');
         var out = {};
         for (var i = 0; i < elements.length; i++) {
             var value = elements[i].type === 'checkbox' ? elements[i].checked : 
@@ -535,23 +666,14 @@ document.addEventListener('DOMContentLoaded', function main() {
             assignKey(out, elements[i].id, value);
         }
         
-        //var outDiv = document.getElementById('json-out');
-        //var outPre = document.createElement('pre');
-        //var outJson = document.createTextNode(JSON.stringify(out, null, 2));
-        //outDiv.innerHTML = '';
-        //outDiv.appendChild(outPre);
-        //outPre.appendChild(outJson);
-       
-        var filename = out.ephemeralRecord.shows[0].venue + ' ' +
-                       out.ephemeralRecord.shows[0].date + ' ' +
-                       out.ephemeralRecord.shows[0].performances[0].title;
-        filename = toId(filename) + '.json';
-         
+        var filename = jsonToFilename(out);
+
         var dl = document.createElement('a');
         dl.setAttribute('href', 'data:text/plain;charset=utf-8,' +
                 encodeURIComponent(JSON.stringify(out, null, 2)));
         dl.setAttribute('download', filename);
         dl.style.display = 'none';
+
         document.body.appendChild(dl);
         dl.click();
         document.body.removeChild(dl);
@@ -560,11 +682,66 @@ document.addEventListener('DOMContentLoaded', function main() {
         return false; 
     });
 
+    var loadFileChooser = document.getElementById('playbill-load');
+    loadFileChooser.addEventListener('change', function(evt) {
+        var file = evt.target.files[0];
+        var reader = new FileReader();
+
+        // Prepare the form for re-rendering.
+        resetForm();
+
+        reader.addEventListener('load', function(evt) {
+            obj = JSON.parse(evt.target.result);
+
+            walkObj(obj, function(val, keyPath) {
+                keyPath = keyPath.slice();  // Mutating data, so make a copy.
+                for (var i = 0; i < keyPath.length; i++) {
+                    if ((typeof keyPath[i]) === 'number') {
+                        keyPath[i] += 1;
+                    }
+                }
+                
+                var fieldId = listToId(keyPath);
+                var tail = keyPath.pop();
+
+                // Is the last value in keyPath a number? If so, this is
+                // an array field. Check to see whether the corresponding 
+                // form fields have been created yet and create them if not.
+                if ((typeof tail) === 'number') {
+                    var renderId = listToId(keyPath);
+
+                    if (document.getElementById(fieldId) === null) {
+                        var render = subFormFactory
+                            .getRendererFromKey[renderId];
+                        console.log(renderId);
+                        console.log(fieldId);
+                        if (render) {
+                            console.log('ACTUALLY RENDERED');
+                            render();
+                        }
+                    }
+                }
+                // TODO: Here, check to see if the field exists and if not, call the renderer.
+            });
+
+            var elements = document.querySelectorAll('input.main-form-input');
+            for (var i = 0; i < elements.length; i++) {
+                var key = elements[i].id;
+                var value = getKey(obj, key);
+
+                if (elements[i].type === 'checkbox') {
+                    elements[i].checked = value;
+                } else {
+                    elements[i].value = value;
+                }
+            }
+        });
+        reader.readAsText(file);
+    });
+
+    // Finally...
+    resetForm();
 });
 
 // Add form (object) (parent, name)
 // Add sequence(array) (parent, name)
-// Add string (parent, name)
-// Add contributor_type (parent, name)
-// Add document_type (parent, name)
-// Add performance_type (parent, name)
