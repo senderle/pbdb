@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', function main() {
+
+    //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    // Schema definitions
+    //
+
     var documentTypeRex = "Playbill|London Stage|Yorkshire Stage|" +
                           "Other Compendia|Periodical Advertisement|" +
                           "Periodical Review";
@@ -302,6 +308,10 @@ document.addEventListener('DOMContentLoaded', function main() {
         "ephemeralRecord": ephemeralRecord.ephemeralRecord,
     };  // One megaform to rule them all!!!
 
+    //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    // Utilities for string manipulation, etc.
+    //
 
     function insertSpace(match, val) {
         return val + ' ';
@@ -360,6 +370,20 @@ document.addEventListener('DOMContentLoaded', function main() {
     function stripNum(s) {
         return s.replace(/([0-9]+\s*$)/g, '');
     }
+
+    function isPrimitive(val) {
+        var vtype = typeof val;
+        return (vtype === 'string') ||
+               (vtype === 'number') ||
+               (vtype === 'boolean') ||
+               (val === null) ||
+               (val === undefined);
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    // Rendering DOM elements
+    //
 
     function wrapWith(tagname, el, attribs) {
         var tag = document.createElement(tagname);
@@ -543,10 +567,15 @@ document.addEventListener('DOMContentLoaded', function main() {
     function resetForm() {
         var formRoot = document.getElementById('playbill-form');
         while (formRoot.lastChild) {
-                formRoot.removeChild(formRoot.lastChild);
+            formRoot.removeChild(formRoot.lastChild);
         }
         render(formRoot, playbillRecord);
     }
+
+    //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    // Recursive object indexing and traversal
+    //
 
     function assignKey(obj, keys, val) {
         keys = idToList(keys);
@@ -596,15 +625,6 @@ document.addEventListener('DOMContentLoaded', function main() {
         }
     }
 
-    function isPrimitive(val) {
-        var vtype = typeof val;
-        return (vtype === 'string') ||
-               (vtype === 'number') ||
-               (vtype === 'boolean') ||
-               (val === null) ||
-               (val === undefined);
-    }
-
     function walkObj(obj, callback, condition, keyPath) {
         var useCondition = (typeof condition === 'function') ? true : false;
         var keys, i;
@@ -635,6 +655,11 @@ document.addEventListener('DOMContentLoaded', function main() {
             }
         }
     }
+
+    //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    // File IO
+    //
 
     function jsonToFilename(json) {
         var venue = json.ephemeralRecord.shows[0].venue;
@@ -743,5 +768,3 @@ document.addEventListener('DOMContentLoaded', function main() {
     resetForm();
 });
 
-// Add form (object) (parent, name)
-// Add sequence(array) (parent, name)
