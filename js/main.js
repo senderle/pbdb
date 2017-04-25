@@ -135,6 +135,11 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "validator": freeTextRex,
                 "documentation": "The name of the performer's role."
             },
+            "nationality": {
+                "validator": nationalityRex,
+                "documentation": "The nationality of the performer if " +
+                                 "given by the document."
+            },
             "newPerformerNotes": newPerformerNotes.newPerformerNotes
         }
     };
