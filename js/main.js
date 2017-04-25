@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function main() {
     var locationRex = freeTextRex; // Create a rex-based controlled vocab?
 
     var personRex = URLRex;  // Use a URI for open linked data?
+    var nationalityRex = freeTextRex;
     
     var contributorRex = [personRex, contributorTypeRex];
     var contributorTypeRex = "Playwright|Composer|Scene Painter|Dance Master" +
