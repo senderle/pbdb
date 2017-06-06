@@ -7,12 +7,12 @@
 
 #load-file-window {
     position: absolute;
-    bottom: 16%
+    bottom: 24%
 }
 
 #save-file-window {
     position: absolute;
-    bottom: 4%;
+    bottom: 6%;
 }
 
 div.side-window {
@@ -35,8 +35,10 @@ div#side-window-container {
     max-width: 65%;
 }
 
-a {
+a.button {
     text-decoration: none;
+    border-radius: 4px;
+    padding: 1px;
 }
 
 div {
@@ -44,13 +46,9 @@ div {
 }
 
 div.subform-group {
-    padding: 6px;
+    padding: 2px;
     background: rgba(0, 0, 0, 0.05);
     border-radius: 4px;
-}
-
-div.subform-group div.subform-group {
-    background: rgba(0, 0, 0, 0.05);
 }
 
 /* label,
@@ -60,7 +58,7 @@ h3.subheader {
 
 div.ui-element {
     background: rgba(0, 0, 0, 0.05);
-    padding: 4px 4px 4px 18px;
+    padding: 4px 4px 4px 16px;
     border-radius: 4px;
     min-width: 30px;
 }
@@ -69,24 +67,8 @@ input {
     max-width: 100%;
 }
 
-.buttonrow {
-    user-select: none;
-    cursor: default;
-}
-
-.button {
-    user-select: none;
-    background-color: gray;
-    padding: 4px;
-    border-radius: 6px;
-    border-color: black;
-    border-style: solid;
-    border-width: 1px;
-}
-
 /* All noselect styles */
-.buttonrow
-.button {
+a {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;

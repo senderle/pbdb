@@ -1,0 +1,224 @@
+{
+    "ephemeralRecord": {
+        "archiveHoldingDocument": {
+            "documentation": "The name of the library or archive that holds the document.",
+            "validator": ""
+        },
+        "callNumber": {
+            "documentation": "The call number of the document as specified by the holding institution.",
+            "validator": ""
+        },
+        "containingCollection": {
+            "documentation": "The name of the collection the document resides in.",
+            "validator": ""
+        },
+        "dimensions": {
+            "converter": [
+                0,
+                0
+            ],
+            "documentation": "A comma-separated 2-tuple containing the length and width of the document in centimeters.",
+            "validator": [
+                "",
+                ""
+            ]
+        },
+        "documentPrinter": {
+            "location": {
+                "documentation": "The city where the document was printed.",
+                "validator": ""
+            },
+            "name": {
+                "documentation": "The name of the printer.",
+                "validator": ""
+            }
+        },
+        "documentType": {
+            "documentation": "The document type. One of Playbill / London Stage / Yorkshire Stage / Other Compendia / Periodical Advertisement / Periodical Review",
+            "validator": "Playbill|London Stage|Yorkshire Stage|Other Compendia|Periodical Advertisement|Periodical Review"
+        },
+        "periodicalTitle": {
+            "documentation": "The name of the containing periodical (e.g. for advertisements). We may develop a controlled vocabulary for this.",
+            "validator": ""
+        },
+        "persistentURL": {
+            "documentation": "A persistent URL where identifying information about the document may be found",
+            "validator": ""
+        },
+        "printedArea": {
+            "converter": [
+                0,
+                0
+            ],
+            "documentation": "A comma-separated 2-tuple containing the length and width of the printed area of the document in centimeters.",
+            "validator": [
+                "",
+                ""
+            ]
+        },
+        "shows": [
+            {
+                "date": {
+                    "documentation": "The exact date of the performance in YYYYMMDD format. For ranges of dates, create a separate Show Record for each date.",
+                    "formType": "date",
+                    "validator": ""
+                },
+                "doorsOpen": {
+                    "documentation": "The time when doors open, if listed, using a 24-hour clock.",
+                    "validator": ""
+                },
+                "featuredAttractions": [
+                    {
+                        "documentation": "Any featured attractions described in the document, exactly as given.",
+                        "validator": ""
+                    }
+                ],
+                "location": {
+                    "documentation": "The geographical location of the performance, exactly as given by the document.",
+                    "validator": ""
+                },
+                "notes": [
+                    {
+                        "documentation": "Notes describing compelling or otherwise important details from the document that will not be captured by any other field.",
+                        "validator": ""
+                    }
+                ],
+                "occasions": [
+                    {
+                        "beneficiary": [
+                            {
+                                "documentation": "One or more people, ideally denoted by URIs from a controlled vocabulary.",
+                                "validator": ""
+                            }
+                        ],
+                        "occasionAsStated": {
+                            "documentation": "The occasion for an occasional performance, exactly as given by the document.",
+                            "validator": ""
+                        },
+                        "occasionType": {
+                            "documentation": "The type of occasional performance. One of Command performance / Benefit Performance / Charitable Benefit Performance / Occasional Performance",
+                            "validator": "Command performance|Benefit Performance|Charitable Benefit Performance|Occasional Performance"
+                        },
+                        "occasioner": [
+                            {
+                                "documentation": "One or more people, ideally denoted by URIs from a controlled vocabulary.",
+                                "validator": ""
+                            }
+                        ]
+                    }
+                ],
+                "performanceBegins": {
+                    "documentation": "The time when the performance begins, using a 24-hour clock.",
+                    "validator": ""
+                },
+                "performances": [
+                    {
+                        "contributors": [
+                            {
+                                "contributorName": {
+                                    "documentation": "The name of the contributor.",
+                                    "validator": ""
+                                },
+                                "contributorType": {
+                                    "documentation": "The type of contributor (e.g. Scene Painter, Director, etc.)",
+                                    "validator": ""
+                                }
+                            }
+                        ],
+                        "genreClaim": {
+                            "documentation": "The genre claim, exactly as given by the document.",
+                            "validator": ""
+                        },
+                        "kindOfPerformance": {
+                            "documentation": "Kind of performance. One of Main Piece / Interlude / After Piece / Interpolation.",
+                            "validator": "Main Piece|Interlude|After Piece|Interpolation"
+                        },
+                        "orderOfPerformance": {
+                            "documentation": "An integer describing the position of this performance within the larger show. Starts at 1. Interpolations should be numbered in order, and are assumed to occur within the last full piece listed.",
+                            "validator": ""
+                        },
+                        "performers": [
+                            {
+                                "nationality": {
+                                    "documentation": "The nationality of the performer if given by the document.",
+                                    "validator": ""
+                                },
+                                "newPerformerNotes": {
+                                    "newPerformer": {
+                                        "documentation": "An indicator set to true if the document identifies this as the performer's first appearance at this venue.",
+                                        "formType": "checkbox",
+                                        "validator": ""
+                                    },
+                                    "newPerformerOrigin": {
+                                        "documentation": "The performer's previous venue, if given by the document, and if the document identifies this as the performer's first appearance at this venue.",
+                                        "validator": ""
+                                    },
+                                    "newRole": {
+                                        "documentation": "An indicator set to true if the document identifies this as the performer's first appearance in this role.",
+                                        "formType": "checkbox",
+                                        "validator": ""
+                                    }
+                                },
+                                "performerName": {
+                                    "documentation": "The name of the performer.",
+                                    "validator": ""
+                                },
+                                "role": {
+                                    "documentation": "The name of the performer's role.",
+                                    "validator": ""
+                                }
+                            }
+                        ],
+                        "title": {
+                            "documentation": "The title of the work being performed, exactly as given by the playbill.",
+                            "validator": ""
+                        }
+                    }
+                ],
+                "theaterCompany": {
+                    "documentation": "The name of the theater company, exactly as given by the document.",
+                    "validator": ""
+                },
+                "ticketing": {
+                    "boxPrice": {
+                        "converter": 0,
+                        "documentation": "The cost of a box seat, as measured using the smallest possible unit of currency.",
+                        "validator": ""
+                    },
+                    "costsOrFees": {
+                        "converter": 0,
+                        "documentation": "The cost of a box seat, as measured using the smallest possible unit of currency.",
+                        "validator": ""
+                    },
+                    "currency": {
+                        "documentation": "The unit of currency.",
+                        "validator": ""
+                    },
+                    "galleryPrice": {
+                        "converter": 0,
+                        "documentation": "The cost of a box seat, as measured using the smallest possible unit of currency.",
+                        "validator": ""
+                    },
+                    "toBeHad": {
+                        "documentation": "The name of the ticketing agent or agents.",
+                        "validator": ""
+                    },
+                    "totalReceipts": {
+                        "converter": 0,
+                        "documentation": "The cost of a box seat, as measured using the smallest possible unit of currency.",
+                        "validator": ""
+                    },
+                    "upperGalleryPrice": {
+                        "converter": 0,
+                        "documentation": "The cost of a box seat, as measured using the smallest possible unit of currency.",
+                        "validator": ""
+                    }
+                },
+                "venue": {
+                    "documentation": "The venue of the performance, exactly as given by the document.",
+                    "validator": ""
+                }
+            }
+        ]
+    }
+}

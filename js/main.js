@@ -175,6 +175,34 @@ document.addEventListener('DOMContentLoaded', function main() {
         }
     };
 
+    var performanceOccasion = {
+        "performanceOccasion": {
+            "occasionAsStated": {
+                "validator": freeTextRex,
+                "documentation": "The occasion for an occasional performance, " +
+                                 "exactly as given by the document."
+            },
+            "occasionType": {
+                "validator": occasionRex,
+                "documentation": "The type of occasional performance. " +
+                                 "One of Command performance / " +
+                                 "Benefit Performance / " +
+                                 "Charitable Benefit Performance / " +
+                                 "Occasional Performance"
+            },
+            "beneficiary": [{
+                "validator": personRex,
+                "documentation": "One or more people, ideally denoted by " +
+                                 "URIs from a controlled vocabulary."
+            }],
+            "occasioner": [{
+                "validator": personRex,
+                "documentation": "One or more people, ideally denoted by " +
+                                 "URIs from a controlled vocabulary."
+            }],
+        }
+    };
+
     var showRecord = {
         "showRecord": {
             "location": {
@@ -200,25 +228,13 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "documentation": "The name of the theater company, exactly " +
                                  "as given by the document."
             },
-            "occasion": {
-                "validator": occasionRex,
-                "documentation": "The occasion for occasional performances. " +
-                                 "One of Command performance / " +
-                                 "Benefit Performance / " +
-                                 "Charitable Benefit Performance / " +
-                                 "Occasional Performance"
-            },
-            "beneficiary": [{
-                "validator": personRex,
-                "documentation": "One or more people, ideally denoted by " +
-                                 "URIs from a controlled vocabulary."
-            }],
             "ticketing": ticketing.ticketing,
             "doorsOpen": {
                 "validator": timeRex,
-                "documentation": "The time when doors open, if listed, using" +
+                "documentation": "The time when doors open, if listed, using " +
                                  "a 24-hour clock."
             },
+            "occasions": [performanceOccasion.performanceOccasion],
             "performanceBegins": {
                 "validator": timeRex,
                 "documentation": "The time when the performance begins, " +
@@ -503,6 +519,7 @@ document.addEventListener('DOMContentLoaded', function main() {
         );
 
         button.setAttribute('href', '#');
+        button.setAttribute('class', 'button');
         button.appendChild(text);
         button.addEventListener('click', renderSubForm);
         renderSubForm();
@@ -559,7 +576,7 @@ document.addEventListener('DOMContentLoaded', function main() {
                 var button = renderNewItemButton(
                         subRoot, key, subForm, idPrefix);
                 button = wrapWith('div', button, 
-                        {'class': 'subform-group'});
+                        {'class': 'subform-group ui-element'});
                 root.appendChild(button);
             } else {
                 renderHeader(root, subHeader, {'class': 'instance-header'});
@@ -772,5 +789,7 @@ document.addEventListener('DOMContentLoaded', function main() {
 
     // Finally...
     resetForm();
+
+    console.log(JSON.stringify(playbillRecord));
 });
 
