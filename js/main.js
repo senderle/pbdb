@@ -171,7 +171,12 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "validator": freeTextRex,
                 "documentation": "The genre claim, exactly as given by the " +
                                  "document."
-            }
+            },
+            "featuredAttractions": [{
+                "validator": freeTextRex,
+                "documentation": "Any featured attractions described in the " +
+                                 "document, exactly as given."
+            }],
         }
     };
 
@@ -240,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "documentation": "The time when the performance begins, " +
                                  "using a 24-hour clock."
             },
-            "featuredAttractions": [{
+            "featuredAttractionsForShow": [{
                 "validator": freeTextRex,
                 "documentation": "Any featured attractions described in the " +
                                  "document, exactly as given."
@@ -273,6 +278,12 @@ document.addEventListener('DOMContentLoaded', function main() {
 
     var ephemeralRecord = {
         "ephemeralRecord": {
+            "dataCataloger": {
+                "validator": freeTextRex,
+                "documentation": "Your unique identifier as a cataloger. " +
+                                 "May be your name, your initials, or some " +
+                                 "other unique word or phrase of your choice."
+            },
             "documentType": {
                 "validator": documentTypeRex,
                 "documentation": "The document type. One of Playbill / " +
@@ -322,8 +333,20 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "documentation": "A comma-separated 2-tuple containing the " +
                                  "length and width of the printed area of " +
                                  "the document in centimeters."
-            }
-        },
+            },
+            "advertisements": [{
+                "validator": freeTextRex,
+                "documentation": "The text of each advertisement, as given " +
+                                 "by the document, to be entered at the " +
+                                 "discression of the cataloger."
+            }],
+            "announcements": [{
+                "validator": freeTextRex,
+                "documentation": "The text of each advertisement, as given " +
+                                 "by the document, to be entered at the " +
+                                 "discression of the cataloger."
+            }]
+        }
     };
 
     var playbillRecord = {
@@ -688,7 +711,8 @@ document.addEventListener('DOMContentLoaded', function main() {
         var venue = json.ephemeralRecord.shows[0].venue;
         var date = json.ephemeralRecord.shows[0].date;
         var title = json.ephemeralRecord.shows[0].performances[0].title;
-        var elements = [venue, date, title];
+        var cataloger = json.ephemeralRecord.dataCataloger;
+        var elements = [date, venue, title, cataloger];
         var tojoin = [];
 
         for (var i = 0; i < elements.length; i++) {

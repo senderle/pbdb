@@ -1,5 +1,17 @@
 {
     "ephemeralRecord": {
+        "advertisements": [
+            {
+                "documentation": "The text of each advertisement, as given by the document, to be entered at the discression of the cataloger.",
+                "validator": ""
+            }
+        ],
+        "announcements": [
+            {
+                "documentation": "The text of each advertisement, as given by the document, to be entered at the discression of the cataloger.",
+                "validator": ""
+            }
+        ],
         "archiveHoldingDocument": {
             "documentation": "The name of the library or archive that holds the document.",
             "validator": ""
@@ -10,6 +22,10 @@
         },
         "containingCollection": {
             "documentation": "The name of the collection the document resides in.",
+            "validator": ""
+        },
+        "dataCataloger": {
+            "documentation": "Your unique identifier as a cataloger. May be your name, your initials, or some other unique word or phrase of your choice.",
             "validator": ""
         },
         "dimensions": {
@@ -67,7 +83,7 @@
                     "documentation": "The time when doors open, if listed, using a 24-hour clock.",
                     "validator": ""
                 },
-                "featuredAttractions": [
+                "featuredAttractionsForShow": [
                     {
                         "documentation": "Any featured attractions described in the document, exactly as given.",
                         "validator": ""
@@ -123,6 +139,12 @@
                                     "documentation": "The type of contributor (e.g. Scene Painter, Director, etc.)",
                                     "validator": ""
                                 }
+                            }
+                        ],
+                        "featuredAttractions": [
+                            {
+                                "documentation": "Any featured attractions described in the document, exactly as given.",
+                                "validator": ""
                             }
                         ],
                         "genreClaim": {
