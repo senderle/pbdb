@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function main() {
             },
             "performerNotes": {
                 "validator": freeTextRex,
-                "documentation": "Notes on the performer, exactly as given" +
+                "documentation": "Notes on the performer, exactly as given " +
                                  "by the document."
             },
             "newPerformerNotes": newPerformerNotes.newPerformerNotes

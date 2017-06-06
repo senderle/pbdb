@@ -160,7 +160,7 @@
                                     "validator": ""
                                 },
                                 "performerNotes": {
-                                    "documentation": "Notes on the performer, exactly as givenby the document.",
+                                    "documentation": "Notes on the performer, exactly as given by the document.",
                                     "validator": ""
                                 },
                                 "role": {
