@@ -136,10 +136,10 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "validator": freeTextRex,
                 "documentation": "The name of the performer's role."
             },
-            "nationality": {
-                "validator": nationalityRex,
-                "documentation": "The nationality of the performer if " +
-                                 "given by the document."
+            "performerNotes": {
+                "validator": freeTextRex,
+                "documentation": "Notes on the performer, exactly as given" +
+                                 "by the document."
             },
             "newPerformerNotes": newPerformerNotes.newPerformerNotes
         }
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function main() {
             "title": {
                 "validator": freeTextRex,
                 "documentation": "The title of the work being performed, " +
-                                 "exactly as given by the playbill."
+                                 "exactly as given by the document."
             },
             "contributors": [contributor.contributor],
             "kindOfPerformance": {

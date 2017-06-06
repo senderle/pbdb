@@ -139,10 +139,6 @@
                         },
                         "performers": [
                             {
-                                "nationality": {
-                                    "documentation": "The nationality of the performer if given by the document.",
-                                    "validator": ""
-                                },
                                 "newPerformerNotes": {
                                     "newPerformer": {
                                         "documentation": "An indicator set to true if the document identifies this as the performer's first appearance at this venue.",
@@ -163,6 +159,10 @@
                                     "documentation": "The name of the performer.",
                                     "validator": ""
                                 },
+                                "performerNotes": {
+                                    "documentation": "Notes on the performer, exactly as givenby the document.",
+                                    "validator": ""
+                                },
                                 "role": {
                                     "documentation": "The name of the performer's role.",
                                     "validator": ""
@@ -170,7 +170,7 @@
                             }
                         ],
                         "title": {
-                            "documentation": "The title of the work being performed, exactly as given by the playbill.",
+                            "documentation": "The title of the work being performed, exactly as given by the document.",
                             "validator": ""
                         }
                     }
