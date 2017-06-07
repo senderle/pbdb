@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "validator": freeTextRex,
                 "documentation": "The name of the performer's role."
             },
-            "performerNotes": {
+            "roleNotes": {
                 "validator": freeTextRex,
                 "documentation": "Notes on the performer, exactly as given " +
                                  "by the document."
