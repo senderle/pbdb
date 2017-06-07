@@ -549,14 +549,15 @@ document.addEventListener('DOMContentLoaded', function main() {
                     // This function renders the actual form, tracking
                     // and updating the value of `n` attached to its closure.
                     var newHeader = singular(titleCase(key)) + ' ' + n;
-                    render(renderSubRoot(root), subForm, 
-                           toId(key, idPrefix) + '_' + n, newHeader);
+                    var newId = toId(key, idPrefix) + '_' + n;
+                    render(renderSubRoot(root), subForm, newId, newHeader);
+                    document.getElementById(newId).focus();
                     n += 1;
                     event.preventDefault();
                     return false;
                 };
                 
-                factory.getRendererFromKey[toId(key, idPrefix)] = renderFunc; 
+                factory.getRendererFromKey[toId(key, idPrefix)] = renderFunc;
                 return renderFunc;
             };
 
