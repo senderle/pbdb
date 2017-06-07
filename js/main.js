@@ -247,6 +247,11 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "documentation": "The name of the theater company, exactly " +
                                  "as given by the document."
             },
+            "stageManager": {
+                "validator": personRex,
+                "documentation": "The name of the stage manager, if present " +
+                                 "in the document, exactly as given."
+            },
             "ticketing": ticketing.ticketing,
             "doorsOpen": {
                 "validator": timeRex,
@@ -325,6 +330,12 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "validator": callNumberRex,
                 "documentation": "The call number of the document as " +
                                  "specified by the holding institution."
+            },
+            "pageNumber": {
+                "validator": intRex,
+                "documentation": "If the record is contained in another " +
+                                 "paginated document, the starting page of " +
+                                 "the record in that document."
             },
             "periodicalTitle": {
                 "validator": periodicalTitleRex,
