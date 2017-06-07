@@ -238,9 +238,9 @@ document.addEventListener('DOMContentLoaded', function main() {
             "date": {
                 "validator": dateRex,
                 "formType": "date",
-                "documentation": "The exact date of the performance in " +
-                                 "YYYYMMDD format. For ranges of dates, " +
-                                 "create a separate Show Record for each date."
+                "documentation": "The exact date of the performance. For " +
+                                 "ranges of dates, create a separate Show " +
+                                 "Record for each date."
             },
             "theaterCompany": {
                 "validator": freeTextRex,
