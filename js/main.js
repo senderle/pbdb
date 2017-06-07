@@ -145,6 +145,23 @@ document.addEventListener('DOMContentLoaded', function main() {
         }
     };
 
+    var performanceFeaturedAttraction = {
+        "performanceFeaturedAttraction": {
+            "attraction": {
+                "validator": freeTextRex,
+                "documentation": "Any featured attractions described in the " +
+                                 "document, exactly as given."
+            },
+            "isInterpolation": {
+                "validator": boolRex,
+                "formType": "checkbox",
+                "documentation": "An indicator set to true if the document " +
+                                 "identifies this as an interpolation " +
+                                 "within the larger performance."
+            }
+        }
+    };
+
     var performance = {
         "performance": {
             "orderOfPerformance": {
@@ -163,8 +180,8 @@ document.addEventListener('DOMContentLoaded', function main() {
             "contributors": [contributor.contributor],
             "kindOfPerformance": {
                 "validator": performanceKindRex,
-                "documentation": "Kind of performance. One of Main Piece / " +
-                                 "Interlude / After Piece / Interpolation."
+                "documentation": "Kind of performance. May either be " +
+                                 "Main Piece or After Piece."
             },
             "performers": [performer.performer],
             "genreClaim": {
@@ -172,11 +189,8 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "documentation": "The genre claim, exactly as given by the " +
                                  "document."
             },
-            "featuredAttractions": [{
-                "validator": freeTextRex,
-                "documentation": "Any featured attractions described in the " +
-                                 "document, exactly as given."
-            }],
+            "featuredAttractions": 
+                [performanceFeaturedAttraction.performanceFeaturedAttraction],
         }
     };
 
