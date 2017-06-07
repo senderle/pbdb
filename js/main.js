@@ -271,6 +271,7 @@ document.addEventListener('DOMContentLoaded', function main() {
             }],
             "notes": [{
                 "validator": freeTextRex,
+                "formType": "textarea",
                 "documentation": "Notes describing compelling or otherwise " +
                                  "important details from the document that " +
                                  "will not be captured by any other field."
@@ -361,12 +362,14 @@ document.addEventListener('DOMContentLoaded', function main() {
             },
             "advertisements": [{
                 "validator": freeTextRex,
+                "formType": "textarea",
                 "documentation": "The text of each advertisement, as given " +
                                  "by the document, to be entered at the " +
                                  "discression of the cataloger."
             }],
             "announcements": [{
                 "validator": freeTextRex,
+                "formType": "textarea",
                 "documentation": "The text of each advertisement, as given " +
                                  "by the document, to be entered at the " +
                                  "discression of the cataloger."
@@ -471,11 +474,18 @@ document.addEventListener('DOMContentLoaded', function main() {
         labelEl.setAttribute('for', id);
         labelEl = wrapWith('div', labelEl);
 
-        var inputEl = document.createElement('input');
+        var inputEl;
+        if (attribs.formType === "textarea") {
+            inputEl = document.createElement('textarea');
+            inputEl.setAttribute('cols', '40');
+            inputEl.setAttribute('rows', '4');
+         } else {
+            inputEl = document.createElement('input');
+            inputEl.setAttribute('size', '40');
+            inputEl.setAttribute('type', attribs.formType || 'text');
+        }
         inputEl.setAttribute('id', id);
-        inputEl.setAttribute('size', '40');
         inputEl.setAttribute('class', 'main-form-input');
-        inputEl.setAttribute('type', attribs.formType || 'text');
 
         var renderHelpText = function() {
             var help = document.getElementById('help-window-text');
@@ -755,7 +765,7 @@ document.addEventListener('DOMContentLoaded', function main() {
 
     var submitButton = document.getElementById('playbill-submit');
     submitButton.addEventListener('click', function() {
-        var elements = document.querySelectorAll('input.main-form-input');
+        var elements = document.querySelectorAll('.main-form-input');
         var out = {};
         for (var i = 0; i < elements.length; i++) {
             var value = elements[i].type === 'checkbox' ? elements[i].checked : 
@@ -821,7 +831,7 @@ document.addEventListener('DOMContentLoaded', function main() {
                 // TODO: Here, check to see if the field exists and if not, call the renderer.
             });
 
-            var elements = document.querySelectorAll('input.main-form-input');
+            var elements = document.querySelectorAll('.main-form-input');
             for (var i = 0; i < elements.length; i++) {
                 var key = elements[i].id;
                 var value = getKey(obj, key);
