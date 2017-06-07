@@ -67,6 +67,11 @@ input {
     max-width: 100%;
 }
 
+textarea.main-form-input {
+    border-color: lightgray;
+    border-width: 1px;
+}
+
 /* All noselect styles */
 a {
     -webkit-touch-callout: none;
