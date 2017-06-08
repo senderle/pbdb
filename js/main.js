@@ -47,7 +47,8 @@ document.addEventListener('DOMContentLoaded', function main() {
         "ticketing": {
             "currency": {
                 "validator": currencyRex,
-                "documentation": "The unit of currency."
+                "documentation": "The national currency in use. Currently " +
+                                 "one of UK / US."
             },
             "boxPrice": {
                 "validator": intRex,
@@ -55,34 +56,77 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "documentation": "The cost of a box seat, as measured using " +
                                  "the smallest possible unit of currency."
             },
+            "secondBoxPrice": {
+                "validator": intRex,
+                "converter": 0,
+                "documentation": "The cost of a second box seat, as " +
+                                 "measured using the smallest possible unit " +
+                                 "of currency."
+            },
+            "pitPrice": {
+                "validator": intRex,
+                "converter": 0,
+                "documentation": "The cost of a pit seat, as " +
+                                 "measured using the smallest possible unit " +
+                                 "of currency."
+
+            },
+            "secondPitPrice": {
+                "validator": intRex,
+                "converter": 0,
+                "documentation": "The cost of a second pit seat, as " +
+                                 "measured using the smallest possible unit " +
+                                 "of currency."
+
+            },
             "galleryPrice": {
                 "validator": intRex,
                 "converter": 0,
-                "documentation": "The cost of a box seat, as measured using " +
-                                 "the smallest possible unit of currency."
+                "documentation": "The cost of a gallery seat, as measured " +
+                                 "using the smallest possible unit of " +
+                                 "currency."
+            },
+            "secondGalleryPrice": {
+                "validator": intRex,
+                "converter": 0,
+                "documentation": "The cost of a second gallery seat, as " +
+                                 "measured using the smallest possible " +
+                                 "unit of currency."
             },
             "upperGalleryPrice": {
                 "validator": intRex,
                 "converter": 0,
-                "documentation": "The cost of a box seat, as measured using " +
-                                 "the smallest possible unit of currency."
+                "documentation": "The cost of a upper gallery seat, as " +
+                                 "measured using the smallest possible " +
+                                 "unit of currency."
+            },
+            "secondUpperGalleryPrice": {
+                "validator": intRex,
+                "converter": 0,
+                "documentation": "The cost of a second upper gallery seat, " + 
+                                 "as measured using the smallest possible " +
+                                 "unit of currency."
             },
             "toBeHad": {
                 "validator": freeTextRex,
                 "documentation": "The name of the ticketing agent or agents."
             },
-            "totalReceipts": {
-                "validator": intRex,
-                "converter": 0,
-                "documentation": "The cost of a box seat, as measured using " +
-                                 "the smallest possible unit of currency."
-            },
-            "costsOrFees": {
-                "validator": intRex,
-                "converter": 0,
-                "documentation": "The cost of a box seat, as measured using " +
-                                 "the smallest possible unit of currency."
-            },
+            // "totalReceipts": {
+            //     "validator": intRex,
+            //     "converter": 0,
+            //     "documentation": "The cost of a box seat, as measured using " +
+            //                      "the smallest possible unit of currency."
+            // },
+            // "costsOrFees": {
+            //     "validator": intRex,
+            //     "converter": 0,
+            //     "documentation": "The cost of a box seat, as measured using " +
+            //                      "the smallest possible unit of currency."
+            // },
+            "ticketingNotes": {
+                "validator": freeTextRex,
+                "documentation": "Additional notes about ticketing."
+           }
         }
     };
 
