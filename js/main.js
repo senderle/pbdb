@@ -511,6 +511,27 @@ document.addEventListener('DOMContentLoaded', function main() {
         return tag;
     }
 
+    function focusRendered() {
+        var rendered = document.querySelectorAll('.newly-rendered');
+
+        for (var i = 0; i < rendered.length; i++) {
+            var node = rendered[i];
+            if (i === 0) {
+                node.focus();
+            }
+            node.classList.remove('newly-rendered');
+        }
+    }
+
+    function focusTop() {
+        focusRendered();
+
+        var inputs = document.querySelectorAll('.main-form-input');
+        if (inputs.length > 0) {
+            inputs[0].focus();
+        }
+    }
+
     function renderInput(root, label, id, attribs) {
         var labelEl = document.createElement('label');
         var labelText = document.createTextNode(label);
@@ -529,7 +550,7 @@ document.addEventListener('DOMContentLoaded', function main() {
             inputEl.setAttribute('type', attribs.formType || 'text');
         }
         inputEl.setAttribute('id', id);
-        inputEl.setAttribute('class', 'main-form-input');
+        inputEl.setAttribute('class', 'main-form-input newly-rendered');
 
         var renderHelpText = function() {
             var help = document.getElementById('help-window-text');
@@ -595,7 +616,10 @@ document.addEventListener('DOMContentLoaded', function main() {
                     var newHeader = singular(titleCase(key)) + ' ' + n;
                     var newId = toId(key, idPrefix) + '_' + n;
                     render(renderSubRoot(root), subForm, newId, newHeader);
-                    document.getElementById(newId).focus();
+                    if (n > 1) {
+                        focusRendered();
+                    }
+
                     n += 1;
                     event.preventDefault();
                     return false;
@@ -696,6 +720,7 @@ document.addEventListener('DOMContentLoaded', function main() {
             formRoot.removeChild(formRoot.lastChild);
         }
         render(formRoot, playbillRecord);
+        focusTop();
     }
 
     //////////////////////////////////////////////////////////////////////////
