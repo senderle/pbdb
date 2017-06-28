@@ -15,14 +15,14 @@ document.addEventListener('DOMContentLoaded', function main() {
     var boolRex = ""; // Make this correct
 
     var floatingPointRex = "";  // Make this correct
-    var intRex = "";  // Make this correct 
+    var intRex = "";  // Make this correct
     var dateRex = "";  // Make this correct
     var timeRex = "";  // Make this correct
     var URLRex = "";  // Make this correct
     var freeTextRex = "";  // This is actually correct as is!
-   
+
     var currencyRex = "";  // Yowza...
-    
+
     // [LIBRARY, COLLECTION_NAME, CALL_NUMBER]
     var libraryRex = freeTextRex;
     var collectionRex = freeTextRex;
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function main() {
 
     var personRex = URLRex;  // Use a URI for open linked data?
     var nationalityRex = freeTextRex;
-    
+
     var contributorRex = [personRex, contributorTypeRex];
     var contributorTypeRex = "Playwright|Composer|Scene Painter|Dance Master" +
                              "Set Designer";
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function main() {
             "secondUpperGalleryPrice": {
                 "validator": intRex,
                 "converter": 0,
-                "documentation": "The cost of a second upper gallery seat, " + 
+                "documentation": "The cost of a second upper gallery seat, " +
                                  "as measured using the smallest possible " +
                                  "unit of currency."
             },
@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function main() {
                 "documentation": "The genre claim, exactly as given by the " +
                                  "document."
             },
-            "featuredAttractions": 
+            "featuredAttractions":
                 [performanceFeaturedAttraction.performanceFeaturedAttraction],
         }
     };
@@ -321,8 +321,8 @@ document.addEventListener('DOMContentLoaded', function main() {
                                  "will not be captured by any other field."
             }],
             "performances": [performance.performance],
-            //"upcomingPerformances": [showRecord.showRecord],  // it's a 
-                                                              // recursive 
+            //"upcomingPerformances": [showRecord.showRecord],  // it's a
+                                                              // recursive
                                                               // type!!
         }
     };
@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function main() {
             },
             "persistentURL": {
                 "validator": URLRex,
-                "documentation": "A persistent URL where identifying " + 
+                "documentation": "A persistent URL where identifying " +
                                  "information about the document may be " +
                                  "found",
             },
@@ -457,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function main() {
     }
 
     function idToList(keys) {
-        // Take id keys in the form "yabba-dabba_doo" and convert them to 
+        // Take id keys in the form "yabba-dabba_doo" and convert them to
         // a list of keys in the form `['yabbaDabba', 'doo']`.
         if (typeof keys === 'string') {
             keys = keys.split('_');
@@ -501,6 +501,16 @@ document.addEventListener('DOMContentLoaded', function main() {
     //////////////////////////////////////////////////////////////////////////
     // Rendering DOM elements
     //
+
+    function isLeaf(obj) {
+        vals = Object.values(obj);
+        leafTest = [];
+        leafTypes = ['string','number','boolean','datetime',null,undefined];
+        for(var i = 0; i < vals.length;i++) {
+            leafTest.push(leafTypes.includes(typeof vals[i]));
+        }
+        return !leafTest.includes(false); //returns true if leaf
+    }
 
     function wrapWith(tagname, el, attribs) {
         var tag = document.createElement(tagname);
@@ -607,7 +617,7 @@ document.addEventListener('DOMContentLoaded', function main() {
         var factory = {};
         factory.getRendererFromKey = {};
         factory.buildRenderer = function(root, key, subForm, idPrefix) {
-            
+
             var renderSubForm = function(n) {
                 // This closure maintains the renderFunc's state (`n`).
                 var renderFunc = function() {
@@ -624,7 +634,7 @@ document.addEventListener('DOMContentLoaded', function main() {
                     event.preventDefault();
                     return false;
                 };
-                
+
                 factory.getRendererFromKey[toId(key, idPrefix)] = renderFunc;
                 return renderFunc;
             };
@@ -664,16 +674,15 @@ document.addEventListener('DOMContentLoaded', function main() {
         } else {
             formKeys = Object.keys(formSpec);
             formKeys.sort(function cmp(a, b) {
-                if (formSpec[a].hasOwnProperty('documentation')) {
-                    if (!formSpec[b].hasOwnProperty('documentation')) {
+                if (isLeaf(formSpec[a])) {
+                    if (!isLeaf(formSpec[b])) {
                         return -1;
                     }
                 } else {
-                    if (formSpec[b].hasOwnProperty('documentation')) {
+                    if (isLeaf(formSpec[b])) {
                         return 1;
                     }
                 }
-                
                 return a < b ? -1 : a == b ? 0 : 1;
             });
         }
@@ -693,22 +702,23 @@ document.addEventListener('DOMContentLoaded', function main() {
             var subRoot;
 
             var nodeId = toId(key, idPrefix);
-            if (subForm.hasOwnProperty('documentation')) {
+            //if (subForm.hasOwnProperty('documentation')) {
+            if (isLeaf(subForm)) {
                 renderInput(root, subHeader, nodeId, subForm);
             } else if (Array.isArray(subForm)) {
                 renderHeader(root, subHeader, {'class': 'subheader'});
-                subRoot = renderSubRoot(root, 
+                subRoot = renderSubRoot(root,
                                         nodeId,
                                         {'class': 'subform-group'});
                 var button = renderNewItemButton(
                         subRoot, key, subForm, idPrefix);
-                button = wrapWith('div', button, 
+                button = wrapWith('div', button,
                         {'class': 'subform-group ui-element'});
                 root.appendChild(button);
             } else {
                 renderHeader(root, subHeader, {'class': 'instance-header'});
                 render(renderSubRoot(root, nodeId),
-                       subForm, 
+                       subForm,
                        nodeId);
             }
         }
@@ -744,9 +754,9 @@ document.addEventListener('DOMContentLoaded', function main() {
             obj[first] = val;
             return;
         }
-      
+
         // If there are more values, we need to make sure they have an
-        // object or array to live in, and to create one if not. 
+        // object or array to live in, and to create one if not.
         if (!obj.hasOwnProperty(first)) {
             if (isNaN(parseInt(keys[1]))) {
                 obj[first] = {};
@@ -838,11 +848,11 @@ document.addEventListener('DOMContentLoaded', function main() {
         var elements = document.querySelectorAll('.main-form-input');
         var out = {};
         for (var i = 0; i < elements.length; i++) {
-            var value = elements[i].type === 'checkbox' ? elements[i].checked : 
+            var value = elements[i].type === 'checkbox' ? elements[i].checked :
                                                           elements[i].value;
             assignKey(out, elements[i].id, value);
         }
-        
+
         var filename = jsonToFilename(out);
 
         var dl = document.createElement('a');
@@ -854,9 +864,9 @@ document.addEventListener('DOMContentLoaded', function main() {
         document.body.appendChild(dl);
         dl.click();
         document.body.removeChild(dl);
-        
+
         event.preventDefault();
-        return false; 
+        return false;
     });
 
     var loadFileChooser = document.getElementById('playbill-load');
@@ -877,12 +887,12 @@ document.addEventListener('DOMContentLoaded', function main() {
                         keyPath[i] += 1;
                     }
                 }
-                
+
                 var fieldId = listToId(keyPath);
                 var tail = keyPath.pop();
 
                 // Is the last value in keyPath a number? If so, this is
-                // an array field. Check to see whether the corresponding 
+                // an array field. Check to see whether the corresponding
                 // form fields have been created yet and create them if not.
                 if ((typeof tail) === 'number') {
                     var renderId = listToId(keyPath);
@@ -921,4 +931,3 @@ document.addEventListener('DOMContentLoaded', function main() {
 
     console.log(JSON.stringify(playbillRecord));
 });
-
