@@ -2,428 +2,12 @@ document.addEventListener('DOMContentLoaded', function main() {
 
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
-    // Schema definitions
+    // Schema
     //
-
-    var documentTypeRex = "Playbill|London Stage|Yorkshire Stage|" +
-                          "Other Compendia|Periodical Advertisement|" +
-                          "Periodical Review";
-    var occasionRex = "Command performance|Benefit Performance|" +
-                      "Charitable Benefit Performance|Occasional Performance";
-    var performanceKindRex = "Main Piece|Interlude|After Piece|Interpolation";
-
-    var boolRex = ""; // Make this correct
-
-    var floatingPointRex = "";  // Make this correct
-    var intRex = "";  // Make this correct
-    var dateRex = "";  // Make this correct
-    var timeRex = "";  // Make this correct
-    var URLRex = "";  // Make this correct
-    var freeTextRex = "";  // This is actually correct as is!
-
-    var currencyRex = "";  // Yowza...
-
-    // [LIBRARY, COLLECTION_NAME, CALL_NUMBER]
-    var libraryRex = freeTextRex;
-    var collectionRex = freeTextRex;
-    var callNumberRex = freeTextRex;
-
-    var periodicalTitleRex = "";  // Create a rex-based controlled vocab
-
-    // [NAME_OF_PRINTER, PLACE]
-    var venueRex = freeTextRex;  // Create a rex-based controlled vocab?
-    var locationRex = freeTextRex; // Create a rex-based controlled vocab?
-
-    var personRex = URLRex;  // Use a URI for open linked data?
-    var nationalityRex = freeTextRex;
-
-    var contributorRex = [personRex, contributorTypeRex];
-    var contributorTypeRex = "Playwright|Composer|Scene Painter|Dance Master" +
-                             "Set Designer";
-
-    var performerRex = [personRex, freeTextRex];
-
-    var ticketing = {
-        "ticketing": {
-            "currency": {
-                "validator": currencyRex,
-                "documentation": "The national currency in use. Currently " +
-                                 "one of UK / US."
-            },
-            "boxPrice": {
-                "validator": intRex,
-                "converter": 0,
-                "documentation": "The cost of a box seat, as measured using " +
-                                 "the smallest possible unit of currency."
-            },
-            "secondBoxPrice": {
-                "validator": intRex,
-                "converter": 0,
-                "documentation": "The cost of a second box seat, as " +
-                                 "measured using the smallest possible unit " +
-                                 "of currency."
-            },
-            "pitPrice": {
-                "validator": intRex,
-                "converter": 0,
-                "documentation": "The cost of a pit seat, as " +
-                                 "measured using the smallest possible unit " +
-                                 "of currency."
-
-            },
-            "secondPitPrice": {
-                "validator": intRex,
-                "converter": 0,
-                "documentation": "The cost of a second pit seat, as " +
-                                 "measured using the smallest possible unit " +
-                                 "of currency."
-
-            },
-            "galleryPrice": {
-                "validator": intRex,
-                "converter": 0,
-                "documentation": "The cost of a gallery seat, as measured " +
-                                 "using the smallest possible unit of " +
-                                 "currency."
-            },
-            "secondGalleryPrice": {
-                "validator": intRex,
-                "converter": 0,
-                "documentation": "The cost of a second gallery seat, as " +
-                                 "measured using the smallest possible " +
-                                 "unit of currency."
-            },
-            "upperGalleryPrice": {
-                "validator": intRex,
-                "converter": 0,
-                "documentation": "The cost of a upper gallery seat, as " +
-                                 "measured using the smallest possible " +
-                                 "unit of currency."
-            },
-            "secondUpperGalleryPrice": {
-                "validator": intRex,
-                "converter": 0,
-                "documentation": "The cost of a second upper gallery seat, " +
-                                 "as measured using the smallest possible " +
-                                 "unit of currency."
-            },
-            "toBeHad": {
-                "validator": freeTextRex,
-                "documentation": "The name of the ticketing agent or agents."
-            },
-            // "totalReceipts": {
-            //     "validator": intRex,
-            //     "converter": 0,
-            //     "documentation": "The cost of a box seat, as measured using " +
-            //                      "the smallest possible unit of currency."
-            // },
-            // "costsOrFees": {
-            //     "validator": intRex,
-            //     "converter": 0,
-            //     "documentation": "The cost of a box seat, as measured using " +
-            //                      "the smallest possible unit of currency."
-            // },
-            "ticketingNotes": {
-                "validator": freeTextRex,
-                "documentation": "Additional notes about ticketing."
-           }
-        }
-    };
-
-    var contributor = {
-        "contributor": {
-            "contributorName": {
-                "validator": personRex,
-                "documentation": "The name of the contributor."
-            },
-            "contributorType": {
-                "validator": personRex,
-                "documentation": "The type of contributor (e.g. Scene " +
-                                 "Painter, Director, etc.)"
-            }
-        }
-    };
-
-    var newPerformerNotes = {
-        "newPerformerNotes": {
-            "newRole": {
-                "validator": boolRex,
-                "formType": "checkbox",
-                "documentation": "An indicator set to true if the document " +
-                                 "identifies this as the performer's first " +
-                                 "appearance in this role."
-            },
-            "newPerformer": {
-                "validator": boolRex,
-                "formType": "checkbox",
-                "documentation": "An indicator set to true if the document " +
-                                 "identifies this as the performer's first " +
-                                 "appearance at this venue."
-            },
-            "newPerformerOrigin": {
-                "validator": venueRex,
-                "documentation": "The performer's previous venue, if given " +
-                                 "by the document, and if the document " +
-                                 "identifies this as the performer's first " +
-                                 "appearance at this venue."
-            }
-        }
-    };
-
-    var performer = {
-        "performer": {
-            "performerName": {
-                "validator": personRex,
-                "documentation": "The name of the performer."
-            },
-            "role": {
-                "validator": freeTextRex,
-                "documentation": "The name of the performer's role."
-            },
-            "roleNotes": {
-                "validator": freeTextRex,
-                "documentation": "Notes on the role or performer, exactly " +
-                                 "as given by the document."
-            },
-            "newPerformerNotes": newPerformerNotes.newPerformerNotes
-        }
-    };
-
-    var performanceFeaturedAttraction = {
-        "performanceFeaturedAttraction": {
-            "attraction": {
-                "validator": freeTextRex,
-                "documentation": "Any featured attractions described in the " +
-                                 "document, exactly as given."
-            },
-            "isInterpolation": {
-                "validator": boolRex,
-                "formType": "checkbox",
-                "documentation": "An indicator set to true if the document " +
-                                 "identifies this as an interpolation " +
-                                 "within the larger performance."
-            }
-        }
-    };
-
-    var performance = {
-        "performance": {
-            "orderOfPerformance": {
-                "validator": intRex,
-                "documentation": "An integer describing the position of " +
-                                 "this performance within the larger show. " +
-                                 "Starts at 1. Interpolations should be " +
-                                 "numbered in order, and are assumed to " +
-                                 "occur within the last full piece listed."
-            },
-            "title": {
-                "validator": freeTextRex,
-                "documentation": "The title of the work being performed, " +
-                                 "exactly as given by the document."
-            },
-            "contributors": [contributor.contributor],
-            "kindOfPerformance": {
-                "validator": performanceKindRex,
-                "documentation": "Kind of performance. May either be " +
-                                 "Main Piece or After Piece."
-            },
-            "performers": [performer.performer],
-            "genreClaim": {
-                "validator": freeTextRex,
-                "documentation": "The genre claim, exactly as given by the " +
-                                 "document."
-            },
-            "featuredAttractions":
-                [performanceFeaturedAttraction.performanceFeaturedAttraction],
-        }
-    };
-
-    var performanceOccasion = {
-        "performanceOccasion": {
-            "occasionAsStated": {
-                "validator": freeTextRex,
-                "documentation": "The occasion for an occasional performance, " +
-                                 "exactly as given by the document."
-            },
-            "occasionType": {
-                "validator": occasionRex,
-                "documentation": "The type of occasional performance. " +
-                                 "One of Command performance / " +
-                                 "Benefit Performance / " +
-                                 "Charitable Benefit Performance / " +
-                                 "Occasional Performance"
-            },
-            "beneficiary": [{
-                "validator": personRex,
-                "documentation": "One or more people, ideally denoted by " +
-                                 "URIs from a controlled vocabulary."
-            }],
-            "occasioner": [{
-                "validator": personRex,
-                "documentation": "One or more people, ideally denoted by " +
-                                 "URIs from a controlled vocabulary."
-            }],
-        }
-    };
-
-    var showRecord = {
-        "showRecord": {
-            "location": {
-                "validator": freeTextRex,
-                "documentation": "The geographical location of the " +
-                                 "performance, exactly as given by the " +
-                                 "document."
-            },
-            "venue": {
-                "validator": venueRex,
-                "documentation": "The venue of the performance, exactly " +
-                                 "as given by the document."
-            },
-            "date": {
-                "validator": dateRex,
-                "formType": "date",
-                "documentation": "The exact date of the performance. For " +
-                                 "ranges of dates, create a separate Show " +
-                                 "Record for each date."
-            },
-            "theaterCompany": {
-                "validator": freeTextRex,
-                "documentation": "The name of the theater company, exactly " +
-                                 "as given by the document."
-            },
-            "stageManager": {
-                "validator": personRex,
-                "documentation": "The name of the stage manager, if present " +
-                                 "in the document, exactly as given."
-            },
-            "ticketing": ticketing.ticketing,
-            "doorsOpen": {
-                "validator": timeRex,
-                "documentation": "The time when doors open, if listed, using " +
-                                 "a 24-hour clock."
-            },
-            "occasions": [performanceOccasion.performanceOccasion],
-            "performanceBegins": {
-                "validator": timeRex,
-                "documentation": "The time when the performance begins, " +
-                                 "using a 24-hour clock."
-            },
-            "featuredAttractionsForShow": [{
-                "validator": freeTextRex,
-                "documentation": "Any featured attractions described in the " +
-                                 "document, exactly as given."
-            }],
-            "notes": [{
-                "validator": freeTextRex,
-                "formType": "textarea",
-                "documentation": "Notes describing compelling or otherwise " +
-                                 "important details from the document that " +
-                                 "will not be captured by any other field."
-            }],
-            "performances": [performance.performance],
-            //"upcomingPerformances": [showRecord.showRecord],  // it's a
-                                                              // recursive
-                                                              // type!!
-        }
-    };
-
-    var documentPrinter = {
-        "documentPrinter": {
-            "name": {
-                "validator": personRex,
-                "documentation": "The name of the printer."
-            },
-            "location": {
-                "validator": locationRex,
-                "documentation": "The city where the document was printed."
-            }
-        }
-    };
-
-    var ephemeralRecord = {
-        "ephemeralRecord": {
-            "dataCataloger": {
-                "validator": freeTextRex,
-                "documentation": "Your unique identifier as a cataloger. " +
-                                 "May be your name, your initials, or some " +
-                                 "other unique word or phrase of your choice."
-            },
-            "documentType": {
-                "validator": documentTypeRex,
-                "documentation": "The document type. One of Playbill / " +
-                                 "London Stage / Yorkshire Stage / " +
-                                 "Other Compendia / Periodical Advertisement" +
-                                 " / Periodical Review",
-            },
-            "persistentURL": {
-                "validator": URLRex,
-                "documentation": "A persistent URL where identifying " +
-                                 "information about the document may be " +
-                                 "found",
-            },
-            "archiveHoldingDocument": {
-                "validator": libraryRex,
-                "documentation": "The name of the library or archive that " +
-                                 "holds the document."
-            },
-            "containingCollection": {
-                "validator": collectionRex,
-                "documentation": "The name of the collection the document " +
-                                 "resides in."
-            },
-            "callNumber": {
-                "validator": callNumberRex,
-                "documentation": "The call number of the document as " +
-                                 "specified by the holding institution."
-            },
-            "pageNumber": {
-                "validator": intRex,
-                "documentation": "If the record is contained in another " +
-                                 "paginated document, the starting page of " +
-                                 "the record in that document."
-            },
-            "periodicalTitle": {
-                "validator": periodicalTitleRex,
-                "documentation": "The name of the containing periodical " +
-                                 "(e.g. for advertisements). We may develop " +
-                                 "a controlled vocabulary for this."
-            },
-            "documentPrinter": documentPrinter.documentPrinter,
-            "shows": [showRecord.showRecord],
-            "dimensions": {
-                "validator": [floatingPointRex, floatingPointRex],
-                "converter": [0.0, 0.0],
-                "documentation": "A comma-separated 2-tuple containing the " +
-                                 "length and width of the document in " +
-                                 "centimeters."
-            },
-            "printedArea": {
-                "validator": [floatingPointRex, floatingPointRex],
-                "converter": [0.0, 0.0],
-                "documentation": "A comma-separated 2-tuple containing the " +
-                                 "length and width of the printed area of " +
-                                 "the document in centimeters."
-            },
-            "advertisements": [{
-                "validator": freeTextRex,
-                "formType": "textarea",
-                "documentation": "The text of each advertisement, as given " +
-                                 "by the document, to be entered at the " +
-                                 "discression of the cataloger."
-            }],
-            "announcements": [{
-                "validator": freeTextRex,
-                "formType": "textarea",
-                "documentation": "The text of each advertisement, as given " +
-                                 "by the document, to be entered at the " +
-                                 "discression of the cataloger."
-            }]
-        }
-    };
-
-    var playbillRecord = {
-        "ephemeralRecord": ephemeralRecord.ephemeralRecord,
-    };  // One megaform to rule them all!!!
+    var req = new XMLHttpRequest();
+    req.open("GET", "data/schema.json", false);
+    req.send();
+    var playbillRecord = JSON.parse(req.responseText);
 
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
@@ -503,13 +87,8 @@ document.addEventListener('DOMContentLoaded', function main() {
     //
 
     function isLeaf(obj) {
-        vals = Object.values(obj);
-        leafTest = [];
-        leafTypes = ['string','number','boolean','datetime',null,undefined];
-        for(var i = 0; i < vals.length;i++) {
-            leafTest.push(leafTypes.includes(typeof vals[i]));
-        }
-        return !leafTest.includes(false); //returns true if leaf
+        leafTypes = ['string', 'number', 'integer', 'boolean', 'datetime'];
+        return leafTypes.includes(obj.type);
     }
 
     function wrapWith(tagname, el, attribs) {
@@ -554,7 +133,15 @@ document.addEventListener('DOMContentLoaded', function main() {
             inputEl = document.createElement('textarea');
             inputEl.setAttribute('cols', '40');
             inputEl.setAttribute('rows', '4');
-         } else {
+        }   else if (attribs.formType === "select") {
+            inputEl = document.createElement('select');
+            inputEl.setAttribute('style', 'background-color: #FFF; width: 333px; height: 22px;');
+            for (var i = 0; i < attribs.allowed.length; i++) {
+                var option = document.createElement('option');
+                option.text = attribs.allowed[i];
+                inputEl.add(option);
+            }
+        }   else {
             inputEl = document.createElement('input');
             inputEl.setAttribute('size', '40');
             inputEl.setAttribute('type', attribs.formType || 'text');
@@ -668,10 +255,12 @@ document.addEventListener('DOMContentLoaded', function main() {
         var renderButton;
         idPrefix = idPrefix ? idPrefix : '';
 
-        if (Array.isArray(formSpec)) {
-            formKeys = [0];  // Lists must always be length 1, and the
-                             // "key" should be empty.
+        if(formSpec.type == 'list') {
+            formKeys = ['schema'];
         } else {
+            if (formSpec.schema) {
+                formSpec = formSpec.schema;
+            }
             formKeys = Object.keys(formSpec);
             formKeys.sort(function cmp(a, b) {
                 if (isLeaf(formSpec[a])) {
@@ -694,7 +283,8 @@ document.addEventListener('DOMContentLoaded', function main() {
             }
 
             var subForm = formSpec[key];
-            if (Array.isArray(formSpec)) {  // The new item renderer will
+            if (formSpec.type == 'list') {
+                                            // The new item renderer will
                 key = '';                   // handle keys for sequences.
             }
 
@@ -702,10 +292,9 @@ document.addEventListener('DOMContentLoaded', function main() {
             var subRoot;
 
             var nodeId = toId(key, idPrefix);
-            //if (subForm.hasOwnProperty('documentation')) {
             if (isLeaf(subForm)) {
                 renderInput(root, subHeader, nodeId, subForm);
-            } else if (Array.isArray(subForm)) {
+            } else if (subForm.type == 'list') {
                 renderHeader(root, subHeader, {'class': 'subheader'});
                 subRoot = renderSubRoot(root,
                                         nodeId,
@@ -799,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function main() {
             for (i = 0; i < obj.length; i++) {
                 keys.push(i);
             }
-        } else {
+            } else {
             keys = Object.keys(obj);
         }
 
@@ -842,7 +431,6 @@ document.addEventListener('DOMContentLoaded', function main() {
     }
 
     // Add event listeners to static UI elements.
-
     var submitButton = document.getElementById('playbill-submit');
     submitButton.addEventListener('click', function() {
         var elements = document.querySelectorAll('.main-form-input');
@@ -853,6 +441,7 @@ document.addEventListener('DOMContentLoaded', function main() {
             assignKey(out, elements[i].id, value);
         }
 
+        console.log(out);
         var filename = jsonToFilename(out);
 
         var dl = document.createElement('a');
@@ -900,10 +489,7 @@ document.addEventListener('DOMContentLoaded', function main() {
                     if (document.getElementById(fieldId) === null) {
                         var render = subFormFactory
                             .getRendererFromKey[renderId];
-                        console.log(renderId);
-                        console.log(fieldId);
                         if (render) {
-                            console.log('ACTUALLY RENDERED');
                             render();
                         }
                     }
@@ -922,12 +508,11 @@ document.addEventListener('DOMContentLoaded', function main() {
                     elements[i].value = value;
                 }
             }
+        focusTop();
         });
         reader.readAsText(file);
     });
 
     // Finally...
     resetForm();
-
-    console.log(JSON.stringify(playbillRecord));
 });
