@@ -1,0 +1,369 @@
+{
+    "ephemeralRecord": {
+        "schema": {
+            "advertisements": {
+                "schema": {
+                    "documentation": "The text of each advertisement, as given by the document, to be entered at the discretion of the cataloger.", 
+                    "formType": "textarea", 
+                    "maxlength": 1000, 
+                    "type": "string"
+                }, 
+                "type": "list"
+            }, 
+            "announcements": {
+                "schema": {
+                    "documentation": "The text of each announcement, as given by the document, to be entered at the discretion of the cataloger.", 
+                    "formType": "textarea", 
+                    "maxlength": 1000, 
+                    "type": "string"
+                }, 
+                "type": "list"
+            }, 
+            "archiveHoldingDocument": {
+                "documentation": "The name of the library or archive that holds the document.", 
+                "maxlength": 200, 
+                "type": "string"
+            }, 
+            "callNumber": {
+                "documentation": "The call number of the document as specified by the holding institution.", 
+                "maxlength": 200, 
+                "required": true, 
+                "type": "string", 
+                "unique": true
+            }, 
+            "containingCollection": {
+                "documentation": "The name of the collection the document resides in.", 
+                "maxlength": 200, 
+                "type": "string"
+            }, 
+            "dataCataloger": {
+                "documentation": "Your unique identifier as a cataloger. May be your name, your initials, or some other unique word or phrase of your choice.", 
+                "maxlength": 200, 
+                "type": "string"
+            }, 
+            "dimensions": {
+                "documentation": "A comma-separated 2-tuple containing the length and width of the document in centimeters.", 
+                "maxlength": 200, 
+                "type": "string"
+            }, 
+            "documentPrinter": {
+                "schema": {
+                    "location": {
+                        "documentation": "The name of the printer.", 
+                        "maxlength": 200, 
+                        "type": "string"
+                    }, 
+                    "name": {
+                        "documentation": "The city where the document was printed.", 
+                        "maxlength": 200, 
+                        "type": "string"
+                    }
+                }, 
+                "type": "dict"
+            }, 
+            "documentType": {
+                "allowed": [
+                    "", 
+                    "Playbill", 
+                    "London Stage", 
+                    "Yorkshire Stage", 
+                    "Other Compendia", 
+                    "Periodical Advertisement", 
+                    "Periodical Review"
+                ], 
+                "documentation": "The document type. One of Playbill / London Stage / Yorkshire Stage / Other Compendia / Periodical Advertisement / Periodical Review", 
+                "formType": "select", 
+                "maxlength": 200, 
+                "type": "string"
+            }, 
+            "pageNumber": {
+                "documentation": "If the record is contained in another paginated document, the starting page of the record in that document.", 
+                "type": "string"
+            }, 
+            "periodicalTitle": {
+                "documentation": "The name of the containing periodical (e.g. for advertisements). We may develop a controlled vocabulary for this.", 
+                "maxlength": 200, 
+                "type": "string"
+            }, 
+            "persistentUrl": {
+                "documentation": "A persistent URL where identifying information about the document may be found.", 
+                "maxlength": 200, 
+                "type": "string"
+            }, 
+            "printedArea": {
+                "documentation": "A comma-separated 2-tuple containing the length and width of the printed area of the document in centimeters.", 
+                "maxlength": 200, 
+                "type": "string"
+            }, 
+            "shows": {
+                "schema": {
+                    "schema": {
+                        "date": {
+                            "documentation": "The exact date of the performance. For ranges of dates, create a separate Show Record for each date.", 
+                            "formType": "date", 
+                            "type": "datetime"
+                        }, 
+                        "doorsOpen": {
+                            "documentation": "The time when doors open, if listed, using a 24-hour clock.", 
+                            "maxlength": 200, 
+                            "type": "string"
+                        }, 
+                        "featuredAttractionsForShow": {
+                            "schema": {
+                                "documentation": "Any featured attractions described in the document, exactly as given.", 
+                                "maxlength": 1000, 
+                                "type": "string"
+                            }, 
+                            "type": "list"
+                        }, 
+                        "location": {
+                            "documentation": "The geographical location of the performance, exactly as given by the document.", 
+                            "maxlength": 200, 
+                            "type": "string"
+                        }, 
+                        "notes": {
+                            "schema": {
+                                "documentation": "Notes describing compelling or otherwise important details from the document that will not be captured by any other field.", 
+                                "formType": "textarea", 
+                                "maxlength": 1000, 
+                                "type": "string"
+                            }, 
+                            "type": "list"
+                        }, 
+                        "occasions": {
+                            "schema": {
+                                "schema": {
+                                    "beneficiary": {
+                                        "schema": {
+                                            "documentation": "One or more people, ideally denoted by URIs from a controlled vocabulary.", 
+                                            "maxlength": 200, 
+                                            "type": "string"
+                                        }, 
+                                        "type": "list"
+                                    }, 
+                                    "occasionAsStated": {
+                                        "documentation": "The occasion for an occasional performance, exactly as given by the document.", 
+                                        "maxlength": 200, 
+                                        "type": "string"
+                                    }, 
+                                    "occasionType": {
+                                        "allowed": [
+                                            "", 
+                                            "Command Performance", 
+                                            "Benefit Performance", 
+                                            "Charitable Benefit Performance", 
+                                            "Occasional Performance"
+                                        ], 
+                                        "documentation": "The type of occasional performance. One of Command performance / Benefit Performance / Charitable Benefit Performance / Occasional Performance.", 
+                                        "formType": "select", 
+                                        "maxlength": 200, 
+                                        "type": "string"
+                                    }, 
+                                    "occasioner": {
+                                        "schema": {
+                                            "documentation": "One or more people, ideally denoted by URIs from a controlled vocabulary.", 
+                                            "maxlength": 200, 
+                                            "type": "string"
+                                        }, 
+                                        "type": "list"
+                                    }
+                                }, 
+                                "type": "dict"
+                            }, 
+                            "type": "list"
+                        }, 
+                        "performanceBegins": {
+                            "documentation": "The time when the performance begins, using a 24-hour clock.", 
+                            "maxlength": 200, 
+                            "type": "string"
+                        }, 
+                        "performances": {
+                            "schema": {
+                                "schema": {
+                                    "contributors": {
+                                        "schema": {
+                                            "schema": {
+                                                "contributorName": {
+                                                    "documentation": "The name of the contributor.", 
+                                                    "maxlength": 200, 
+                                                    "type": "string"
+                                                }, 
+                                                "contributorType": {
+                                                    "documentation": "The type of contributor e.g. Scene Painter, Director, etc.", 
+                                                    "maxlength": 200, 
+                                                    "type": "string"
+                                                }
+                                            }, 
+                                            "type": "dict"
+                                        }, 
+                                        "type": "list"
+                                    }, 
+                                    "featuredAttractions": {
+                                        "schema": {
+                                            "schema": {
+                                                "attraction": {
+                                                    "documentation": "Any featured attractions described in the document, exactly as given.", 
+                                                    "maxlength": 1000, 
+                                                    "type": "string"
+                                                }, 
+                                                "isInterpolation": {
+                                                    "documentation": "An indicator set to true if the document identifies this as an interpolation within the larger performance.", 
+                                                    "formType": "checkbox", 
+                                                    "type": "boolean"
+                                                }
+                                            }, 
+                                            "type": "dict"
+                                        }, 
+                                        "type": "list"
+                                    }, 
+                                    "genreClaim": {
+                                        "documentation": "The genre claim, exactly as given by the document.", 
+                                        "maxlength": 200, 
+                                        "type": "string"
+                                    }, 
+                                    "kindOfPerformance": {
+                                        "documentation": "Kind of performance. May either be Main Piece or After Piece.", 
+                                        "maxlength": 200, 
+                                        "type": "string"
+                                    }, 
+                                    "orderOfPerformance": {
+                                        "documentation": "An integer describing the position of this performance within the larger show. Starts at 1. Interpolations should be numbered in order, and are assumed to occur within the last full piece listed.", 
+                                        "type": "integer"
+                                    }, 
+                                    "performers": {
+                                        "schema": {
+                                            "schema": {
+                                                "newPerformerNotes": {
+                                                    "schema": {
+                                                        "newPerformer": {
+                                                            "documentation": "An indicator set to true if the document identifies this as the performer's first appearance at this venue.", 
+                                                            "formType": "checkbox", 
+                                                            "type": "boolean"
+                                                        }, 
+                                                        "newPerformerOrigin": {
+                                                            "documentation": "The performer's previous venue, if given by the document, and if the document identifies this as the performer's first appearance at this venue.", 
+                                                            "maxlength": 200, 
+                                                            "type": "string"
+                                                        }, 
+                                                        "newRole": {
+                                                            "documentation": "An indicator set to true if the document identifies this as the performer's first appearance in this role.", 
+                                                            "formType": "checkbox", 
+                                                            "type": "boolean"
+                                                        }
+                                                    }, 
+                                                    "type": "dict"
+                                                }, 
+                                                "performerName": {
+                                                    "documentation": "The name of the performer.", 
+                                                    "maxlength": 200, 
+                                                    "type": "string"
+                                                }, 
+                                                "role": {
+                                                    "documentation": "The name of the performer's role.", 
+                                                    "maxlength": 200, 
+                                                    "type": "string"
+                                                }, 
+                                                "roleNotes": {
+                                                    "documentation": "Notes on the role or performer, exactly as given by the document.", 
+                                                    "maxlength": 200, 
+                                                    "type": "string"
+                                                }
+                                            }, 
+                                            "type": "dict"
+                                        }, 
+                                        "type": "list"
+                                    }, 
+                                    "title": {
+                                        "documentation": "The title of the work being performed, exactly as given by the document.", 
+                                        "maxlength": 200, 
+                                        "type": "string"
+                                    }
+                                }, 
+                                "type": "dict"
+                            }, 
+                            "type": "list"
+                        }, 
+                        "stageManager": {
+                            "documentation": "The name of the stage manager, if present in the document, exactly as given.", 
+                            "maxlength": 200, 
+                            "type": "string"
+                        }, 
+                        "theaterCompany": {
+                            "documentation": "The name of the theater company, exactly as given by the document.", 
+                            "maxlength": 200, 
+                            "type": "string"
+                        }, 
+                        "ticketing": {
+                            "schema": {
+                                "boxPrice": {
+                                    "documentation": "The cost of a box seat, as measured using the smallest possible unit of currency.", 
+                                    "nullable": true, 
+                                    "type": "number"
+                                }, 
+                                "currency": {
+                                    "documentation": "The national currency in use. Currently one of UK / US.", 
+                                    "maxlength": 200, 
+                                    "type": "string"
+                                }, 
+                                "galleryPrice": {
+                                    "documentation": "The cost of a second pit seat, as measured using the smallest possible unit of currency.", 
+                                    "nullable": true, 
+                                    "type": "number"
+                                }, 
+                                "pitPrice": {
+                                    "documentation": "The cost of a pit seat, as measured using the smallest possible unit of currency.", 
+                                    "nullable": true, 
+                                    "type": "number"
+                                }, 
+                                "secondBoxPrice": {
+                                    "documentation": "The cost of a second box seat, as measured using the smallest possible unit of currency.", 
+                                    "nullable": true, 
+                                    "type": "number"
+                                }, 
+                                "secondGalleryPrice": {
+                                    "documentation": "The cost of a second gallery seat, as measured using the smallest possible unit of currency.", 
+                                    "nullable": true, 
+                                    "type": "number"
+                                }, 
+                                "secondPitPrice": {
+                                    "documentation": "The cost of a second pit seat, as measured using the smallest possible unit of currency.", 
+                                    "nullable": true, 
+                                    "type": "number"
+                                }, 
+                                "secondUpperGalleryPrice": {
+                                    "documentation": "The cost of a second upper gallery seat, as measured using the smallest possible unit of currency.", 
+                                    "nullable": true, 
+                                    "type": "number"
+                                }, 
+                                "ticketingNotes": {
+                                    "documentation": "Additional notes about ticketing.", 
+                                    "maxlength": 200, 
+                                    "type": "string"
+                                }, 
+                                "toBeHad": {
+                                    "documentation": "The name of the ticketing agent or agents.", 
+                                    "maxlength": 200, 
+                                    "type": "string"
+                                }, 
+                                "upperGalleryPrice": {
+                                    "documentation": "The cost of a upper gallery seat, as measured using the smallest possible unit of currency.", 
+                                    "nullable": true, 
+                                    "type": "number"
+                                }
+                            }, 
+                            "type": "dict"
+                        }, 
+                        "venue": {
+                            "documentation": "The venue of the performance, exactly as given by the document.", 
+                            "maxlength": 200, 
+                            "type": "string"
+                        }
+                    }, 
+                    "type": "dict"
+                }, 
+                "type": "list"
+            }
+        }, 
+        "type": "dict"
+    }
+}
